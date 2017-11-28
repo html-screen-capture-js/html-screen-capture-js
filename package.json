@@ -1,0 +1,39 @@
+{
+  "name": "html-screen-capture-js",
+  "version": "1.0.0",
+  "description": "HTML Screen Capture JS",
+  "keywords": [
+    "html",
+    "dom",
+    "screen",
+    "capture",
+    "image",
+    "js",
+    "javascript"
+  ],
+  "license": "MIT",
+  "author": "Uri Kalish <uri.kalish@gmail.com>",
+  "files": [
+    "dist/html-screen-capture.js",
+    "dist/html-screen-capture.min.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/html-screen-capture-js/html-screen-capture-js"
+  },
+  "scripts": {
+    "build": "gulp"
+  },
+  "devDependencies": {
+    "babel-core": "~6.24.1",
+    "babel-loader": "~7.0.0",
+    "babel-preset-es2015": "~6.24.1",
+    "gulp": "~3.9.1",
+    "gulp-rename": "~1.2.2",
+    "gulp-zip": "~4.0.0",
+    "run-sequence": "~2.0.0",
+    "webpack": "~2.6.1"
+  },
+  "dependencies": {
+  }
+}
