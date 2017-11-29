@@ -1,6 +1,6 @@
 {
   "name": "html-screen-capture-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HTML Screen Capture JS",
   "keywords": [
     "html",
@@ -25,14 +25,14 @@
     "build": "gulp"
   },
   "devDependencies": {
-    "babel-core": "~6.24.1",
-    "babel-loader": "~7.0.0",
-    "babel-preset-es2015": "~6.24.1",
-    "gulp": "~3.9.1",
-    "gulp-rename": "~1.2.2",
-    "gulp-zip": "~4.0.0",
-    "run-sequence": "~2.0.0",
-    "webpack": "~2.6.1"
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-zip": "^4.0.0",
+    "run-sequence": "^2.0.0",
+    "webpack": "^2.6.1"
   },
   "dependencies": {
   }
