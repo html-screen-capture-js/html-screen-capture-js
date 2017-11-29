@@ -9,11 +9,10 @@ module.exports = {
 	},
 	output:{
 		publicPath: '/',
-		filename: 'out/[name].js',
+		filename: 'dist/[name].js',
 		libraryTarget: 'var',
 		library: 'htmlScreenCapturer'
 	},
-	devtool: 'source-map',
 	module: {
 		loaders: [
 			{
