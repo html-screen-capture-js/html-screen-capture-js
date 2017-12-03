@@ -1,38 +1,40 @@
 let webpack = require('webpack');
+const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 let path = require('path');
-let PACKAGE = require('./package.json');
-let banner = `/**\n* ${PACKAGE.description} v${PACKAGE.version}\n* Date: ${new Date()}\n**/`;
+const env = require('yargs').argv.env; // use --env with webpack 2
+let libraryName = 'html-screen-capture';
+let plugins = [], outputFile;
+if (env === 'build') {
+	plugins.push(new UglifyJsPlugin({ minimize: true }));
+	outputFile = libraryName + '.min.js';
+} else {
+	outputFile = libraryName + '.js';
+}
 
-module.exports = {
-	entry: {
-		'html-screen-capture': './src/html-screen-capture.js'
-	},
-	output:{
-		publicPath: '/',
-		filename: 'dist/[name].js',
-		libraryTarget: 'var',
-		library: 'htmlScreenCapturer'
+const config = {
+	entry: __dirname + '/src/index.js',
+	devtool: 'source-map',
+	output: {
+		path: __dirname + '/dist',
+		filename: outputFile,
+		library: libraryName,
+		libraryTarget: 'umd',
+		umdNamedDefine: true
 	},
 	module: {
-		loaders: [
+		rules: [
 			{
-				test: /\.js$/,
-				include: path.join(__dirname, 'src'),
+				test: /(\.jsx|\.js)$/,
 				loader: 'babel-loader',
-				query: {
-					presets: ['es2015']
-				}
+				exclude: /(node_modules|bower_components)/
 			}
 		]
 	},
-	plugins: [
-		new webpack.LoaderOptionsPlugin({
-			debug: true
-		}),
-		new webpack.BannerPlugin({
-			banner: banner,
-			raw: true,
-			entryOnly: true
-		})
-	]
+	resolve: {
+		modules: [path.resolve('./node_modules'), path.resolve('./src')],
+		extensions: ['.json', '.js']
+	},
+	plugins: plugins
 };
+
+module.exports = config;

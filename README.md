@@ -40,8 +40,7 @@ You can get this library from these sources:
 <a name="artifacts"></a>
 ## Artifacts
 
-- html-screen-capture.js
-- html-screen-capture.min.js
+- index.js
 
 <a name="api"></a>
 ## API
@@ -49,14 +48,14 @@ You can get this library from these sources:
 ### Syntax
 
 ```sh
-htmlScreenCapturer.capture([outputType], [htmlDocument], [options]);
+htmlScreenCaptureLib.capture([outputType], [htmlDocument], [options]);
 ```
 
 ### Usage Example
 
 ```sh
-htmlScreenCapturer.capture(
-    htmlScreenCapturer.OutputType.STRING,
+htmlScreenCaptureLib.capture(
+    htmlScreenCaptureLib.OutputType.STRING,
     window.document,
     {
         'imageFormatForDataUrl': 'image/jpeg',
