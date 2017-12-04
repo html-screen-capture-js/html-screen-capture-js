@@ -48,14 +48,14 @@ You can get this library from these sources:
 ### Syntax
 
 ```sh
-htmlScreenCaptureLib.capture([outputType], [htmlDocument], [options]);
+htmlScreenCaptureJs.capture([outputType], [htmlDocument], [options]);
 ```
 
 ### Usage Example
 
 ```sh
-htmlScreenCaptureLib.capture(
-    htmlScreenCaptureLib.OutputType.STRING,
+htmlScreenCaptureJs.capture(
+    htmlScreenCaptureJs.OutputType.STRING,
     window.document,
     {
         'imageFormatForDataUrl': 'image/jpeg',
