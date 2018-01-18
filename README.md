@@ -40,7 +40,7 @@ You can get this library from these sources:
 <a name="artifacts"></a>
 ## Artifacts
 
-- index.js
+- html-screen-capture.js
 
 <a name="api"></a>
 ## API
