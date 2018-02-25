@@ -158,6 +158,6 @@ An optional object-type parameter with key-value pairs. You can change any defau
 The returned value is a new static lightweight HTML document in some format depending on the OutputType parameter supplied to the function.
 - If OutputType equals to htmlScreenCapturer.OutputType.OBJECT, the return value is an object.
 - If OutputType equals to htmlScreenCapturer.OutputType.STRING, the return value is a string.
-- If OutputType equals to htmlScreenCapturer.OutputType.URI, the return value is a URL-encoded string.
+- If OutputType equals to htmlScreenCapturer.OutputType.URI, the return value is a URI-encoded string.
 - If OutputType equals to htmlScreenCapturer.OutputType.BASE64, the return value is a Base64-encoded string.  
 - If OutputType is not specified, the return value is an object. 
