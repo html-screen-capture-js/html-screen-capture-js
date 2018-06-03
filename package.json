@@ -1,6 +1,6 @@
 {
   "name": "html-screen-capture-js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "HTML Screen Capture JS",
   "keywords": [
     "html",
@@ -35,6 +35,5 @@
     "webpack": "^3.8.1",
     "yargs": "^10.0.3"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
