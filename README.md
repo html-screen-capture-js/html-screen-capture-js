@@ -5,7 +5,7 @@
 [![NPM version](https://img.shields.io/npm/v/html-screen-capture-js.svg)](https://www.npmjs.com/package/html-screen-capture-js)
 [![Github Release](https://img.shields.io/github/release/html-screen-capture-js/html-screen-capture-js/all.svg)](https://github.com/html-screen-capture-js/html-screen-capture-js/releases)
 
-A small javascript library that takes a web page and returns a new, lightweight, static HTML DOM document. The library removes all external file dependencies while preserving the original appearance.
+A small javascript library that gets a web page, and returns a new lightweight self-contained HTML DOM document. The library removes all external file dependencies while preserving the original appearance.
 
 This library can be used to:
 
@@ -20,7 +20,7 @@ Uri Kalish, NOV 2017
 <a name="technicalOverview"></a>
 ## Technical Overview
 
-The code takes an HTML document as a parameter, and returns a new static lightweight HTML document object that preserves the original appearance.
+The code gets an HTML document as a parameter, and returns a new lightweight self-contained HTML document object that preserves the original appearance.
 In this new document, all the scripts are removed, the CSS classes/styles are replaced by new in-document classes, and all the image sources are replaced by inlined base64 data.
 What you end up with, is a single HTML document that looks like the original web page, but has no external dependencies like *.js, *.css, *.png, etc. so it can easily be displayed, saved, or transferred.
 Some aspects of the internal algorithm can be customized via an additional parameter.
