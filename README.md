@@ -53,8 +53,13 @@ htmlScreenCaptureJs.capture([outputType], [htmlDocument], [options]);
 
 ### Usage Example
 
+By using defaults:
 ```sh
-htmlScreenCaptureJs.capture(
+let str = htmlScreenCaptureJs.capture();
+```
+By specifying parameters:
+```sh
+let str = htmlScreenCaptureJs.capture(
     htmlScreenCaptureJs.OutputType.STRING,
     window.document,
     {
@@ -67,7 +72,7 @@ htmlScreenCaptureJs.capture(
 ### Parameters
 
 #### outputType
-An optional enum-type parameter, specifying the desired output. If not specified - output will be returned as an object.
+An optional enum-type parameter, specifying the desired output. If not specified (falsey) - output will be returned as an object.
 
 A valid value is one of these:
 - htmlScreenCapturer.OutputType.OBJECT
@@ -76,10 +81,10 @@ A valid value is one of these:
 - htmlScreenCapturer.OutputType.BASE64
 
 #### htmlDocument
-An optional object-type parameter, specifying the HTML document to capture. If not specified - window.document is used.
+An optional object-type parameter, specifying the HTML document to capture. If not specified (falsey) - window.document is used.
 
 #### options
-An optional object-type parameter with key-value pairs. You can change any default option value by defining a similarly named property on this object. If not specified (or specified but defining only some properties) - default values are used for all non-defined properties.
+An optional object-type parameter with key-value pairs. You can change any default option value by defining a similarly named property on this object. If not specified (falsey), or specified but defining only some of the properties - default values are used for all non-defined properties.
 
 ##### tagsOfIgnoredDocHeadElements
 
