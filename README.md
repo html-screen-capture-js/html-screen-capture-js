@@ -17,8 +17,6 @@ License:
 
 - Although this is an MIT-licensed library, usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
 
-Uri Kalish, NOV 2017
-
 <a name="technicalOverview"></a>
 ## Technical Overview
 
