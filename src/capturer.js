@@ -65,14 +65,14 @@ export default class Capturer {
 		}
 		return classes;
 	}
-	_getClassName(domElm) {
+	static _getClassName(domElm) {
 		let classes = domElm.className;
 		return classes instanceof SVGAnimatedString ? classes.baseVal : classes;
 	}
 	_handleElmCss(domElm, newElm) {
 		if (this._getClasses(newElm).length > 0) {
 			if (this._options.attrKeyForSavingElementOrigClass) {
-				newElm.setAttribute(this._options.attrKeyForSavingElementOrigClass, this._getClassName(newElm));
+				newElm.setAttribute(this._options.attrKeyForSavingElementOrigClass, Capturer._getClassName(newElm));
 			}
 			newElm.removeAttribute('class');
 		}
@@ -98,6 +98,12 @@ export default class Capturer {
 		}
 		if (classStr) {
 			newElm.setAttribute('class', classStr.trim());
+		}
+	}
+	static _handleElmValue(domElm, newElm) {
+		if (domElm.value && domElm.tagName.toLowerCase() === 'input' && domElm.getAttribute('type') === 'text') {
+			let valueAttr = domElm.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+			newElm.setAttribute('value', valueAttr);
 		}
 	}
 	_appendNewStyle(newHtml) {
@@ -155,6 +161,9 @@ export default class Capturer {
 			if (this._options.tagsOfSkippedElementsForChildTreeCssHandling && this._options.tagsOfSkippedElementsForChildTreeCssHandling.indexOf(domElm.tagName.toLowerCase()) > -1) {
 				handleCss = false;
 			}
+		}
+		if (domElm.value) {
+			Capturer._handleElmValue(domElm, newElm);
 		}
 		if (domElm.children) {
 			for (let i = domElm.children.length - 1; i >= 0; i--) {
