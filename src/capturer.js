@@ -102,8 +102,7 @@ export default class Capturer {
 	}
 	static _handleElmValue(domElm, newElm) {
 		if (domElm.value && domElm.tagName.toLowerCase() === 'input' && domElm.getAttribute('type') === 'text') {
-			let valueAttr = domElm.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-			newElm.setAttribute('value', valueAttr);
+			newElm.setAttribute('value', domElm.value);
 		}
 	}
 	_appendNewStyle(newHtml) {
