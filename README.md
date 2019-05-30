@@ -13,7 +13,8 @@ This library can be used to:
 - Save a web page as a single-file self-contained HTML document to a client local machine.
 - Send a complete web page content as a simple string to a remote server.
 
-License: Although this is an MIT-licensed library, usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
+License:
+- Although this is an MIT-licensed library, usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
 
 Uri Kalish, NOV 2017
 
