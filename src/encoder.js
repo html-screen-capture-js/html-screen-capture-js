@@ -5,7 +5,7 @@ export default class Encoder {
 		str = str.replace(/\r\n/g,'\n');
 		let utfText = '';
 		for (let n = 0; n < str.length; n++) {
-			let c = str.charCodeAt(n);
+			const c = str.charCodeAt(n);
 			if (c < 128) {
 				utfText += String.fromCharCode(c);
 			} else if((c > 127) && (c < 2048)) {
@@ -21,7 +21,7 @@ export default class Encoder {
 	}
 	static base64Encode(str) {
 		let output = '';
-		let keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+		const keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 		let chr1, chr2, chr3, enc1, enc2, enc3, enc4;
 		let i = 0;
 		str = Encoder._utf8_encode(str);

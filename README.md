@@ -55,7 +55,7 @@ htmlScreenCaptureJs.capture([outputType], [htmlDocument], [options]);
 
 By using defaults:
 ```sh
-let str = htmlScreenCaptureJs.capture();
+let htmlDoc = htmlScreenCaptureJs.capture();
 ```
 By specifying parameters:
 ```sh

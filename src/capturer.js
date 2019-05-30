@@ -53,10 +53,10 @@ export default class Capturer {
 		return imgDataUrl;
 	}
 	_getClasses(domElm) {
-		let classes = [];
-		let className = domElm.className instanceof SVGAnimatedString ? domElm.className.baseVal : domElm.className;
+		const classes = [];
+		const className = domElm.className instanceof SVGAnimatedString ? domElm.className.baseVal : domElm.className;
 		if (className) {
-			let classNames = className.split(' ');
+			const classNames = className.split(' ');
 			classNames.forEach(c => {
 				if (c) {
 					classes.push(c);
@@ -66,7 +66,7 @@ export default class Capturer {
 		return classes;
 	}
 	static _getClassName(domElm) {
-		let classes = domElm.className;
+		const classes = domElm.className;
 		return classes instanceof SVGAnimatedString ? classes.baseVal : classes;
 	}
 	_handleElmCss(domElm, newElm) {
@@ -82,12 +82,12 @@ export default class Capturer {
 			}
 			newElm.removeAttribute('style');
 		}
-		let computedStyle = getComputedStyle(domElm);
+		const computedStyle = getComputedStyle(domElm);
 		let classStr = '';
 		for (let i = 0; i < computedStyle.length; i++) {
-			let property = computedStyle.item(i);
-			let value = computedStyle.getPropertyValue(property);
-			let mapKey = property + ':' + value;
+			const property = computedStyle.item(i);
+			const value = computedStyle.getPropertyValue(property);
+			const mapKey = property + ':' + value;
 			let className = this._classMap[mapKey];
 			if (!className) {
 				this._classCount++;
@@ -115,7 +115,7 @@ export default class Capturer {
 		}
 	}
 	_appendNewStyle(newHtml) {
-		let style = this._doc.createElement('style');
+		const style = this._doc.createElement('style');
 		style.type = 'text/css';
 		let cssText = this._options.rulesToAddToDocStyle ? this._options.rulesToAddToDocStyle.join('') : '';
 		for (let def in this._classMap) {
@@ -148,7 +148,7 @@ export default class Capturer {
 			}
 		}
 		if (!shouldRemoveElm && !this._isHead && this._options.classesOfIgnoredDocBodyElements) {
-			let domElmClasses = this._getClasses(domElm);
+			const domElmClasses = this._getClasses(domElm);
 			domElmClasses.forEach(c => {
 				if (!shouldRemoveElm && this._options.classesOfIgnoredDocBodyElements.indexOf(c) > -1) {
 					shouldRemoveElm = true;
@@ -159,7 +159,7 @@ export default class Capturer {
 	}
 	_recursiveWalk(domElm, newElm, handleCss) {
 		if (this._shouldHandleImgDataUrl && !this._isHead && domElm.tagName.toLowerCase() === 'img') {
-			let imgDataUrl = this._getImgDataUrl(domElm);
+			const imgDataUrl = this._getImgDataUrl(domElm);
 			if (imgDataUrl) {
 				newElm.setAttribute('src', imgDataUrl);
 			}
@@ -184,24 +184,24 @@ export default class Capturer {
 		}
 	}
 	_createNewHtml() {
-		let newHtml = this._doc.documentElement.cloneNode(false);
+		const newHtml = this._doc.documentElement.cloneNode(false);
 		this._handleElmCss(this._doc.documentElement, newHtml);
 		return newHtml;
 	}
 	_appendNewHead(newHtml) {
-		let newHead = this._doc.head.cloneNode(true);
+		const newHead = this._doc.head.cloneNode(true);
 		this._isHead = true;
 		this._recursiveWalk(this._doc.head, newHead, false);
 		newHtml.appendChild(newHead);
 	}
 	_appendNewBody(newHtml) {
-		let newBody = this._doc.body.cloneNode(true);
+		const newBody = this._doc.body.cloneNode(true);
 		this._isHead = false;
 		this._recursiveWalk(this._doc.body, newBody, true);
 		newHtml.appendChild(newBody);
 	}
 	_getHtmlObject() {
-		let newHtml = this._createNewHtml();
+		const newHtml = this._createNewHtml();
 		this._appendNewHead(newHtml);
 		this._appendNewBody(newHtml);
 		this._appendNewStyle(newHtml);
@@ -209,11 +209,11 @@ export default class Capturer {
 	}
 	_prepareOutput(newHtmlObject, outputType) {
 		let output = null;
-		let outputTypeEnum = new OutputTypeEnum();
+		const outputTypeEnum = new OutputTypeEnum();
 		if (!outputType || (outputType === outputTypeEnum.OBJECT)) {
 			output = newHtmlObject;
 		} else {
-			let outerHtml = (newHtmlObject ? (newHtmlObject.outerHTML) : '') || '';
+			const outerHtml = (newHtmlObject ? (newHtmlObject.outerHTML) : '') || '';
 			if (outerHtml) {
 				if (outputType === outputTypeEnum.STRING) {
 					output = outerHtml;
@@ -232,13 +232,13 @@ export default class Capturer {
 	}
 	capture(outputType, htmlDocument, options) {
 		let output = null;
-		let startTime = (new Date()).getTime();
+		const startTime = (new Date()).getTime();
 		try {
 			this._overrideOptions(options);
 			this._doc = htmlDocument || document;
 			this._logger.setLogLevel(this._options.logLevel);
 			this._logger.info(`capture() outputType: ${outputType} - start`);
-			let newHtmlObject = this._getHtmlObject();
+			const newHtmlObject = this._getHtmlObject();
 			output = this._prepareOutput(newHtmlObject, outputType);
 		} catch(ex) {
 			this._logger.error(`capture() - error - ${ex.message}`);
