@@ -101,8 +101,17 @@ export default class Capturer {
 		}
 	}
 	static _handleElmValue(domElm, newElm) {
-		if (domElm.value && domElm.tagName.toLowerCase() === 'input' && domElm.getAttribute('type') === 'text') {
+		if (domElm.tagName.toLowerCase() === 'input' && domElm.getAttribute('type') === 'text') {
 			newElm.setAttribute('value', domElm.value);
+		} else if (domElm.tagName.toLowerCase() === 'select' && domElm.children) {
+			newElm.setAttribute('value', domElm.value);
+			for (let i = domElm.children.length - 1; i >= 0; i--) {
+				if (domElm.children[i].getAttribute('value') === domElm.value) {
+					newElm.children[i].setAttribute('selected', '');
+				} else {
+					newElm.children[i].removeAttribute('selected');
+				}
+			}
 		}
 	}
 	_appendNewStyle(newHtml) {
