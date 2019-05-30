@@ -14,6 +14,7 @@ This library can be used to:
 - Send a complete web page content as a simple string to a remote server.
 
 License:
+
 - Although this is an MIT-licensed library, usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
 
 Uri Kalish, NOV 2017
