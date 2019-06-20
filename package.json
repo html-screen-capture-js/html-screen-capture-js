@@ -1,6 +1,6 @@
 {
   "name": "html-screen-capture-js",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "HTML Screen Capture JS",
   "keywords": [
     "html",
@@ -14,16 +14,17 @@
   "license": "MIT",
   "author": "Uri Kalish <uri.kalish@gmail.com>",
   "files": [
-    "dist/html-screen-capture.js"
+    "dist/html-screen-capture.min.js"
   ],
-  "main": "dist/html-screen-capture.js",
+  "main": "dist/html-screen-capture.min.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/html-screen-capture-js/html-screen-capture-js"
   },
   "scripts": {
-    "build": "webpack --env dev && webpack --env build",
-    "dev": "webpack --progress --colors --watch --env dev"
+    "build": "webpack --progress --colors --env dev && webpack --progress --colors --env prod",
+    "dev": "webpack --progress --colors --env dev",
+    "prod": "webpack --progress --colors --env prod"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

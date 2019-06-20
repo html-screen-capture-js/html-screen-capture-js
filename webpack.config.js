@@ -5,11 +5,11 @@ const env = require('yargs').argv.env; // use --env with webpack 2
 let fileName = 'html-screen-capture';
 let libraryName = 'htmlScreenCaptureJs';
 let plugins = [], outputFile;
-if (env === 'build') {
+if (env === 'dev') {
+	outputFile = fileName + '.js';
+} else {
 	plugins.push(new UglifyJsPlugin({ minimize: true }));
 	outputFile = fileName + '.min.js';
-} else {
-	outputFile = fileName + '.js';
 }
 
 const config = {
