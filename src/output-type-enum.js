@@ -1,8 +1,8 @@
 export default class OutputTypeEnum {
 	constructor() {
-		this.OBJECT = 'OBJECT';
-		this.STRING = 'STRING';
-		this.URI 	= 'URI';
-		this.BASE64 = 'BASE64';
+		this.OBJECT = 'object';
+		this.STRING = 'string';
+		this.URI 	= 'uri';
+		this.BASE64 = 'base64';
 	}
 }

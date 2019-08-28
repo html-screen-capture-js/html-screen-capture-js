@@ -1,7 +1,6 @@
 # html-screen-capture-js
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
-[![Gitter](https://img.shields.io/gitter/room/html-screen-capture-js/html-screen-capture-js.svg)](https://gitter.im/html-screen-capture-js/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![NPM version](https://img.shields.io/npm/v/html-screen-capture-js.svg)](https://www.npmjs.com/package/html-screen-capture-js)
 [![Github Release](https://img.shields.io/github/release/html-screen-capture-js/html-screen-capture-js/all.svg)](https://github.com/html-screen-capture-js/html-screen-capture-js/releases)
 
@@ -15,7 +14,16 @@ This library can be used to:
 
 License:
 
-- Although this is an MIT-licensed library, usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
+- Usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
+
+<a name="demo"></a>
+## Try the Demo
+
+Simly clone/download the repository and execute cmd:
+```sh
+run-demo.bat
+```
+First, it will build the library, and then open a demo page in Chrome. On this demo page you can click the Capture button, and then the Copy button. This will copy the new html text to your clipboard. Paste to an empty html file via some text editor, and open this file in a browser.
 
 <a name="technicalOverview"></a>
 ## Technical Overview
@@ -41,6 +49,7 @@ You can get this library from these sources:
 ## Artifacts
 
 - html-screen-capture.js
+- html-screen-capture.min.js
 
 <a name="api"></a>
 ## API
@@ -161,8 +170,8 @@ An optional object-type parameter with key-value pairs. You can change any defau
 ### Return Value
 
 The returned value is a new static lightweight HTML document in some format depending on the OutputType parameter supplied to the function.
-- If OutputType equals to htmlScreenCapturer.OutputType.OBJECT, the return value is an object.
-- If OutputType equals to htmlScreenCapturer.OutputType.STRING, the return value is a string.
-- If OutputType equals to htmlScreenCapturer.OutputType.URI, the return value is a URI-encoded string.
-- If OutputType equals to htmlScreenCapturer.OutputType.BASE64, the return value is a Base64-encoded string.  
+- If OutputType equals to htmlScreenCaptureJs.OutputType.OBJECT, the return value is an object.
+- If OutputType equals to htmlScreenCaptureJs.OutputType.STRING, the return value is a string.
+- If OutputType equals to htmlScreenCaptureJs.OutputType.URI, the return value is a URI-encoded string.
+- If OutputType equals to htmlScreenCaptureJs.OutputType.BASE64, the return value is a Base64-encoded string.  
 - If OutputType is not specified, the return value is an object. 

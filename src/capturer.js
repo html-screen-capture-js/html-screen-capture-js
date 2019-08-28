@@ -210,16 +210,16 @@ export default class Capturer {
 	_prepareOutput(newHtmlObject, outputType) {
 		let output = null;
 		const outputTypeEnum = new OutputTypeEnum();
-		if (!outputType || (outputType === outputTypeEnum.OBJECT)) {
+		if (!outputType || (outputType.toLowerCase() === outputTypeEnum.OBJECT)) {
 			output = newHtmlObject;
 		} else {
 			const outerHtml = (newHtmlObject ? (newHtmlObject.outerHTML) : '') || '';
 			if (outerHtml) {
-				if (outputType === outputTypeEnum.STRING) {
+				if (outputType.toLowerCase() === outputTypeEnum.STRING) {
 					output = outerHtml;
-				} else if (outputType === outputTypeEnum.URI) {
+				} else if (outputType.toLowerCase() === outputTypeEnum.URI) {
 					output = Encoder.uriEncode(outerHtml);
-				} else if (outputType === outputTypeEnum.BASE64) {
+				} else if (outputType.toLowerCase() === outputTypeEnum.BASE64) {
 					output = Encoder.base64Encode(outerHtml);
 				}
 			}
