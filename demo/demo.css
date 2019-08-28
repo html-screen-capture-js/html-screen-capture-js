@@ -1,0 +1,66 @@
+* {
+    box-sizing: border-box;
+}
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Helvetica, sans-serif;
+    font-size: 16px;
+}
+label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+input {
+    border: 1px solid #ccc;
+    font-family: Helvetica, sans-serif;
+}
+a {
+    color: #09a;
+    text-decoration: none;
+}
+.content-to-capture {
+    display: flex;
+    height: 50vh;
+    overflow: auto;
+    padding: 20px;
+}
+/* .content-left {
+} */
+/* .gal-gadot-img {
+} */
+.content-right {
+    margin: 0 10px;
+}
+.gal-gadot-bio {
+    font-size: 16px;
+}
+.form-panel {
+    margin-top: 10px;
+}
+.capture-controls {
+    height: 50vh;
+    background-image: linear-gradient(to right, #ccc, #333);
+    padding: 20px;
+}
+.btn {
+    margin-right: 20px;
+    padding: 10px;
+    cursor: pointer;
+}
+.output {
+    outline: none;
+    margin-top: 20px;
+    width: calc(100vw - 40px);
+    height: calc(50vh - 100px);
+    resize: none;
+    overflow: auto;
+    border: 1px solid #999;
+    background-color: #000;
+    color: #0f0;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 12px;
+    line-height: 14px;
+}

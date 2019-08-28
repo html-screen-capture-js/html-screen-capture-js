@@ -3,92 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>html-screen-capture-js demo</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            font-family: Helvetica, sans-serif;
-            font-size: 16px;
-        }
-        input {
-            font-family: Helvetica, sans-serif;
-        }
-        .content-to-capture {
-            height: 50vh;
-            overflow: auto;
-            padding: 20px;
-        }
-        .capture-controls {
-            height: 50vh;
-            background-image: linear-gradient(to right, #ccc, #333);
-            padding: 20px;
-        }
-        .btn {
-            margin-right: 20px;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .output {
-            outline: none;
-            margin-top: 20px;
-            width: calc(100vw - 40px);
-            height: calc(50vh - 100px);
-            resize: none;
-            overflow: auto;
-            border: 1px solid #999;
-            background-color: #000;
-            color: #0f0;
-            font-family: "Lucida Console", Monaco, monospace;
-            font-size: 12px;
-            line-height: 14px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="demo.css">
     <!--<script src="../dist/html-screen-capture.js"></script>-->
     <script src="../dist/html-screen-capture.min.js"></script>
-    <script>
-        const goCapture = () => {
-	        document.getElementById('output').value = htmlScreenCaptureJs.capture(
-	            'string',
-                document,
-                {
-                    attrKeyValuePairsOfIgnoredElements: {
-                        id: 'capture-controls'
-                    },
-	                rulesToAddToDocStyle: [],
-                    logLevel: 'debug'
-                });
-	        document.getElementById('btn-copy').removeAttribute('disabled');
-        };
-        const goCopy = () => {
-	        const outputText = document.getElementById('output');
-	        outputText.select();
-	        document.execCommand('copy');
-        };
-    </script>
+    <script src="./demo.js"></script>
 </head>
 <body>
     <div class="content-to-capture">
-        <div style="display:flex;">
-            <img id="name-poster" height="317" width="214" alt="Gal Gadot" title="Gal Gadot" crossorigin="anonymous" src="https://m.media-amazon.com/images/M/MV5BMjUzZTJmZDItODRjYS00ZGRhLTg2NWQtOGE0YjJhNWVlMjNjXkEyXkFqcGdeQXVyMTg4NDI0NDM@._V1_UY317_CR51,0,214,317_AL_.jpg">
-            <div style="margin:0 10px;">
-            <div style="font-size:16px;">
+        <div class="content-left">
+            <img class="gal-gadot-img" height="317" width="214" title="Gal Gadot" crossorigin="anonymous" src="https://m.media-amazon.com/images/M/MV5BMjUzZTJmZDItODRjYS00ZGRhLTg2NWQtOGE0YjJhNWVlMjNjXkEyXkFqcGdeQXVyMTg4NDI0NDM@._V1_UY317_CR51,0,214,317_AL_.jpg">
+        </div>
+        <div class="content-right">
+            <section class="gal-gadot-bio">
                 <a href="https://en.wikipedia.org/wiki/Gal_Gadot">Gal Gadot Varsano</a> (born 30 April 1985) is an Israeli actress and model. At age 18, she was crowned Miss Israel 2004.
                 She then served two years in the Israel Defense Forces as a combat instructor, and began studying law and international relations at IDC Herzliya college while building up her modeling and acting careers.
                 Gadot's first international film role came as <a href="https://en.wikipedia.org/wiki/Gisele_Yashar">Gisele Yashar</a> in <a href="https://en.wikipedia.org/wiki/Fast_%26_Furious_(2009_film)">Fast &amp; Furious</a> (2009), a role she reprised in subsequent installments of <a href="https://en.wikipedia.org/wiki/The_Fast_and_the_Furious">the film franchise</a>.
                 She went on to earn worldwide fame for portraying <a href="https://en.wikipedia.org/wiki/Wonder_Woman">Wonder Woman</a> in the <a href="https://en.wikipedia.org/wiki/DC_Extended_Universe">DC Extended Universe</a>, beginning with <a href="https://en.wikipedia.org/wiki/Batman_v_Superman:_Dawn_of_Justice">Batman v Superman: Dawn of Justice</a> (2016), followed by the solo film <a href="https://en.wikipedia.org/wiki/Wonder_Woman_(2017_film)">Wonder Woman</a> and the ensemble <a href="https://en.wikipedia.org/wiki/Justice_League_(film)">Justice League</a> (both 2017).
-            </div>
-                <div style="margin-top: 10px;">
-                    <span>Name: </span>
-                    <input type="text" value="Gal Gadot" title="name" style="border: 1px solid #ccc;"/>
+            </section>
+            <section class="form-panel">
+                <div>
+                    <label for="name-input">Name:</label>
+                    <input id="name-input" type="text" title="name" value="Gal Gadot" />
                 </div>
-            </div>
+            </section>
         </div>
-
     </div>
+
+    <!-- THIS DIV WILL BE IGNORED (VIA ITS ID) WHEN CAPTURING -->
     <div id="capture-controls" class="capture-controls">
         <div>
             <button onclick="goCapture()" class="btn">Capture</button>
@@ -98,5 +39,6 @@
             <textarea id="output" class="output" title="Output" readonly></textarea>
         </div>
     </div>
+
 </body>
 </html>
