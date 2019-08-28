@@ -19,10 +19,11 @@ License:
 <a name="demo"></a>
 ## Try the Demo
 
-Simply clone or download the repository, and execute cmd:
+Simly clone/download the repository and execute cmd:
 ```sh
 run-demo.bat
 ```
+First, it will build the library, and then open a demo page in Chrome. On this demo page you can click the Capture button, and then the Copy button. This will copy the new html text to your clipboard. Paste to an empty html file via some text editor, and open this file in a browser.
 
 <a name="technicalOverview"></a>
 ## Technical Overview
