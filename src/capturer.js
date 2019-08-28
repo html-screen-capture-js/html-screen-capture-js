@@ -23,7 +23,7 @@ export default class Capturer {
 			prefixForNewGeneratedClasses: 'c',
 			imageFormatForDataUrl: 'image/png',
 			imageQualityForDataUrl: 0.92,
-			rulesToAddToDocStyle: ['*{font-family:"Arial Narrow" !important;}']
+			rulesToAddToDocStyle: []
 		};
 	}
 	_overrideOptions(options) {

@@ -158,7 +158,7 @@ An optional object-type parameter with key-value pairs. You can change any defau
 ##### rulesToAddToDocStyle 
 
 - Type: Array of strings 
-- Default: [ '*{font-family:"Arial Narrow" !important;}' ]
+- Default: [ ] //an empty array
 - CSS rules to add to the newly created HTML document.
 
 ##### logLevel

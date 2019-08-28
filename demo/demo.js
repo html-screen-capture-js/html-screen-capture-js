@@ -5,8 +5,7 @@ const goCapture = () => {
         {
             attrKeyValuePairsOfIgnoredElements: {
                 id: 'capture-controls'
-            },
-            rulesToAddToDocStyle: []            
+            }            
         });
     document.getElementById('btn-copy').removeAttribute('disabled');
 };
