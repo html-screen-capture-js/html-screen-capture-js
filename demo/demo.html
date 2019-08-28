@@ -44,6 +44,7 @@
             line-height: 14px;
         }
     </style>
+    <!--<script src="../dist/html-screen-capture.js"></script>-->
     <script src="../dist/html-screen-capture.min.js"></script>
     <script>
         const goCapture = () => {
@@ -61,7 +62,6 @@
         const goCopy = () => {
 	        const outputText = document.getElementById('output');
 	        outputText.select();
-	        outputText.setSelectionRange(0, 99999);
 	        document.execCommand('copy');
         };
     </script>
@@ -69,7 +69,7 @@
 <body>
     <div class="content-to-capture">
         <div style="display:flex;">
-            <img id="name-poster" height="317" width="214" alt="Gal Gadot" title="Gal Gadot" src="https://m.media-amazon.com/images/M/MV5BMjUzZTJmZDItODRjYS00ZGRhLTg2NWQtOGE0YjJhNWVlMjNjXkEyXkFqcGdeQXVyMTg4NDI0NDM@._V1_UY317_CR51,0,214,317_AL_.jpg">
+            <img id="name-poster" height="317" width="214" alt="Gal Gadot" title="Gal Gadot" crossorigin="anonymous" src="https://m.media-amazon.com/images/M/MV5BMjUzZTJmZDItODRjYS00ZGRhLTg2NWQtOGE0YjJhNWVlMjNjXkEyXkFqcGdeQXVyMTg4NDI0NDM@._V1_UY317_CR51,0,214,317_AL_.jpg">
             <div style="margin:0 10px;">
             <div style="font-size:16px;">Gal Gadot Varsano (born 30 April 1985) is an Israeli actress and model. At age 18, she was crowned Miss Israel 2004. She then served two years in the Israel Defense Forces as a combat instructor, and began studying law and international relations at IDC Herzliya college while building up her modeling and acting careers.</div>
                 <div style="margin-top: 10px;">
