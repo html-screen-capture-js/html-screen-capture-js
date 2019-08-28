@@ -9,6 +9,9 @@ body {
     font-family: Helvetica, sans-serif;
     font-size: 16px;
 }
+section {
+    margin-top: 10px;
+}
 label {
     margin-right: 10px;
     font-weight: bold;
@@ -18,7 +21,7 @@ input {
     font-family: Helvetica, sans-serif;
 }
 a {
-    color: #09a;
+    color: #0aa;
     text-decoration: none;
 }
 .content-to-capture {
@@ -35,10 +38,10 @@ a {
     margin: 0 10px;
 }
 .gal-gadot-bio {
-    font-size: 16px;
+    margin-top: 0;
 }
-.form-panel {
-    margin-top: 10px;
+.my-canvas {
+    background-color: #000;
 }
 .capture-controls {
     height: 50vh;
@@ -59,7 +62,7 @@ a {
     overflow: auto;
     border: 1px solid #999;
     background-color: #000;
-    color: #0f0;
+    color: #0aa;
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 12px;
     line-height: 14px;

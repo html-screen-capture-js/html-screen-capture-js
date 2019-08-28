@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="demo.css">
     <!--<script src="../dist/html-screen-capture.js"></script>-->
     <script src="../dist/html-screen-capture.min.js"></script>
-    <script src="./demo.js"></script>
+    <script src="./demo.js"></script>    
 </head>
 <body>
     <div class="content-to-capture">
@@ -20,16 +20,18 @@
                 Gadot's first international film role came as <a href="https://en.wikipedia.org/wiki/Gisele_Yashar">Gisele Yashar</a> in <a href="https://en.wikipedia.org/wiki/Fast_%26_Furious_(2009_film)">Fast &amp; Furious</a> (2009), a role she reprised in subsequent installments of <a href="https://en.wikipedia.org/wiki/The_Fast_and_the_Furious">the film franchise</a>.
                 She went on to earn worldwide fame for portraying <a href="https://en.wikipedia.org/wiki/Wonder_Woman">Wonder Woman</a> in the <a href="https://en.wikipedia.org/wiki/DC_Extended_Universe">DC Extended Universe</a>, beginning with <a href="https://en.wikipedia.org/wiki/Batman_v_Superman:_Dawn_of_Justice">Batman v Superman: Dawn of Justice</a> (2016), followed by the solo film <a href="https://en.wikipedia.org/wiki/Wonder_Woman_(2017_film)">Wonder Woman</a> and the ensemble <a href="https://en.wikipedia.org/wiki/Justice_League_(film)">Justice League</a> (both 2017).
             </section>
-            <section class="form-panel">
+            <section>
                 <div>
                     <label for="name-input">Name:</label>
                     <input id="name-input" type="text" title="name" value="Gal Gadot" />
                 </div>
             </section>
+            <section>
+                    <canvas id="my-canvas" class="my-canvas" width="100" height="100"></canvas>
+            </section>
         </div>
     </div>
 
-    <!-- THIS DIV WILL BE IGNORED (VIA ITS ID) WHEN CAPTURING -->
     <div id="capture-controls" class="capture-controls">
         <div>
             <button onclick="goCapture()" class="btn">Capture</button>
@@ -39,6 +41,6 @@
             <textarea id="output" class="output" title="Output" readonly></textarea>
         </div>
     </div>
-
+    
 </body>
 </html>

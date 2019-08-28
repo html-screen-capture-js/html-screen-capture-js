@@ -35,6 +35,15 @@ export default class Capturer {
 			}
 		}
 	}
+	_getCanvasDataUrl(canvasElm) {
+		let canvasDataUrl = '';
+		try {
+			canvasDataUrl = canvasElm.toDataURL(this._options.imageFormatForDataUrl, this._options.imageQualityForDataUrl);
+		} catch(ex) {
+			this._logger.warn(`getCanvasDataUrl() - ${ex.message}`);			
+		}
+		return canvasDataUrl;
+	}
 	_getImgDataUrl(imgElm) {
 		let imgDataUrl = '';
 		try {
@@ -45,13 +54,13 @@ export default class Capturer {
 			this._canvas.width = imgElm.clientWidth;
 			this._canvas.height = imgElm.clientHeight;
 			this._ctx.drawImage(imgElm, 0, 0);
-			imgDataUrl = this._canvas.toDataURL(this._options.imageFormatForDataUrl, this._options.imageQualityForDataUrl);
+			imgDataUrl = this._getCanvasDataUrl(this._canvas);
 		} catch(ex) {
 			this._logger.warn(`getImgDataUrl() - ${ex.message}`);
 			this._shouldHandleImgDataUrl = false;
 		}
 		return imgDataUrl;
-	}
+	}	
 	_getClasses(domElm) {
 		const classes = [];
 		const className = domElm.className instanceof SVGAnimatedString ? domElm.className.baseVal : domElm.className;
@@ -163,15 +172,22 @@ export default class Capturer {
 			if (imgDataUrl) {
 				newElm.setAttribute('src', imgDataUrl);
 			}
+		}		
+		if (!this._isHead && domElm.tagName.toLowerCase() === 'canvas') {
+			const canvasDataUrl = this._getCanvasDataUrl(domElm);
+			if (canvasDataUrl) {
+				newElm.setAttribute('src', canvasDataUrl);
+			}
+			newElm.outerHTML = newElm.outerHTML.replace(/<canvas/g, '<img');			
+		}
+		if (domElm.value) {
+			Capturer._handleElmValue(domElm, newElm);
 		}
 		if (handleCss) {
 			this._handleElmCss(domElm, newElm);
 			if (this._options.tagsOfSkippedElementsForChildTreeCssHandling && this._options.tagsOfSkippedElementsForChildTreeCssHandling.indexOf(domElm.tagName.toLowerCase()) > -1) {
 				handleCss = false;
 			}
-		}
-		if (domElm.value) {
-			Capturer._handleElmValue(domElm, newElm);
 		}
 		if (domElm.children) {
 			for (let i = domElm.children.length - 1; i >= 0; i--) {
