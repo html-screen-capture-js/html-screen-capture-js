@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>html-screen-capture-js demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: "Arial Narrow", sans-serif;
+        }
+        .content-to-capture {
+            height: 50vh;
+            overflow: auto;
+            padding: 20px;
+        }
+        .capture-controls {
+            height: 50vh;
+            background-image: linear-gradient(to right, #ccc, #333);
+            padding: 20px;
+        }
+        .btn {
+            margin-right: 20px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .output {
+            outline: none;
+            margin-top: 20px;
+            width: calc(100vw - 40px);
+            height: calc(50vh - 100px);
+            resize: none;
+            overflow: auto;
+            border: 1px solid #999;
+            background-color: #000;
+            color: #0f0;
+            font-family: "Lucida Console", Monaco, monospace;
+            font-size: 12px;
+            line-height: 14px;
+        }
+    </style>
+    <script src="../dist/html-screen-capture.min.js"></script>
+    <script>
+        const goCapture = () => {
+	        document.getElementById('output').value = htmlScreenCaptureJs.capture(
+                htmlScreenCaptureJs.OutputType.STRING,
+                window.document,
+                {
+                    attrKeyValuePairsOfIgnoredElements: {
+                        id: 'capture-controls'
+                    }
+                });
+	        document.getElementById('btn-copy').removeAttribute('disabled');
+        };
+        const goCopy = () => {
+	        const outputText = document.getElementById('output');
+	        outputText.select();
+	        outputText.setSelectionRange(0, 99999);
+	        document.execCommand('copy');
+        };
+    </script>
+</head>
+<body>
+    <div class="content-to-capture">
+        <div>
+            <img id="name-poster" height="317" width="214" alt="Gal Gadot Picture" title="Gal Gadot Picture" src="https://m.media-amazon.com/images/M/MV5BMjUzZTJmZDItODRjYS00ZGRhLTg2NWQtOGE0YjJhNWVlMjNjXkEyXkFqcGdeQXVyMTg4NDI0NDM@._V1_UY317_CR51,0,214,317_AL_.jpg">
+        </div>
+    </div>
+    <div id="capture-controls" class="capture-controls">
+        <div>
+            <button onclick="goCapture()" class="btn">Capture</button>
+            <button id="btn-copy" onclick="goCopy()" class="btn" disabled>Copy Result to Clipboard</button>
+        </div>
+        <div>
+            <textarea id="output" class="output" title="Output" readonly></textarea>
+        </div>
+    </div>
+</body>
+</html>
