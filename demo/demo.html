@@ -48,12 +48,13 @@
     <script>
         const goCapture = () => {
 	        document.getElementById('output').value = htmlScreenCaptureJs.capture(
-                htmlScreenCaptureJs.OutputType.STRING,
-                window.document,
+	            'string',
+                document,
                 {
                     attrKeyValuePairsOfIgnoredElements: {
                         id: 'capture-controls'
-                    }
+                    },
+                    logLevel: 'debug'
                 });
 	        document.getElementById('btn-copy').removeAttribute('disabled');
         };
@@ -82,7 +83,7 @@
     <div id="capture-controls" class="capture-controls">
         <div>
             <button onclick="goCapture()" class="btn">Capture</button>
-            <button id="btn-copy" onclick="goCopy()" class="btn" disabled>Copy Result to Clipboard</button>
+            <button onclick="goCopy()" disabled id="btn-copy" class="btn">Copy Result to Clipboard</button>
         </div>
         <div>
             <textarea id="output" class="output" title="Output" readonly></textarea>
