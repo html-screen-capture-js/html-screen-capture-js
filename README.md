@@ -19,7 +19,7 @@ License:
 <a name="demo"></a>
 ## Try the Demo
 
-Simly clone/download the repository and execute cmd:
+Simply clone/download the repository and execute cmd:
 ```sh
 run-demo.bat
 ```
