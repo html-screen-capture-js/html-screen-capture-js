@@ -15,7 +15,15 @@ This library can be used to:
 
 License:
 
-- Although this is an MIT-licensed library, usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
+- Usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
+
+<a name="demo"></a>
+## Try the Demo
+
+Simply clone or download the repository, and execute cmd:
+```sh
+run-demo.bat
+```
 
 <a name="technicalOverview"></a>
 ## Technical Overview
@@ -41,6 +49,7 @@ You can get this library from these sources:
 ## Artifacts
 
 - html-screen-capture.js
+- html-screen-capture.min.js
 
 <a name="api"></a>
 ## API
