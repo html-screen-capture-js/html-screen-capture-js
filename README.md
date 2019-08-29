@@ -23,7 +23,7 @@ Simply clone/download the repository and execute cmd:
 ```sh
 run-demo.bat
 ```
-First, it will install all the require npm dependencies and build the library, and then open a demo page in Chrome.
+It will install all the required npm dependencies, build the library, and open the demo page in Chrome.
 
 <a name="technicalOverview"></a>
 ## Technical Overview
