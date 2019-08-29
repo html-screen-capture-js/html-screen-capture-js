@@ -1,17 +1,26 @@
 const goCapture = () => {
-    document.getElementById('output').value = htmlScreenCaptureJs.capture(
+	const docText = htmlScreenCaptureJs.capture(
         'string',
         document,
         {
             attrKeyValuePairsOfIgnoredElements: {
-                id: 'capture-controls'
-            }            
+                id: 'content-to-ignore'
+            }
         });
-    document.getElementById('btn-copy').removeAttribute('disabled');
+	document.getElementById('capture-result-text').value = docText;
+	displayInFrame(docText);
+	document.getElementById('btn-copy').classList.remove('hidden');
+	document.getElementById('capture-result-text').classList.remove('hidden');
+	document.getElementById('capture-result-iframe').classList.remove('hidden');
+};
+
+const displayInFrame = (docText) => {
+	var iframe = document.getElementById('capture-result-iframe');
+	iframe.src = 'data:text/html;charset=utf-8,' + encodeURI(docText);
 };
 
 const goCopy = () => {
-    const outputText = document.getElementById('output');
+    const outputText = document.getElementById('capture-result-text');
     outputText.select();
     document.execCommand('copy');
 };
@@ -19,11 +28,11 @@ const goCopy = () => {
 const drawCanvas = () => {
     const canvas = document.getElementById('my-canvas');
     const ctx = canvas.getContext('2d');
-    const grd = ctx.createRadialGradient(50, 50, 0, 50, 50, 50);
+    const grd = ctx.createRadialGradient(50, 25, 0, 50, 25, 50);
     grd.addColorStop(0, "#000");
     grd.addColorStop(1, "#0aa");
     ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillRect(0, 0, 100, 50);
 
     ctx.font = "16px Helvetica";
     ctx.fillStyle = "#fff";

@@ -9,7 +9,7 @@
     <script src="./demo.js"></script>    
 </head>
 <body>
-    <div class="content-to-capture">
+    <div id="content-to-capture" class="content-to-capture">
         <div class="content-left">
             <img class="gal-gadot-img" height="317" width="214" title="Gal Gadot" crossorigin="anonymous" src="https://m.media-amazon.com/images/M/MV5BMjUzZTJmZDItODRjYS00ZGRhLTg2NWQtOGE0YjJhNWVlMjNjXkEyXkFqcGdeQXVyMTg4NDI0NDM@._V1_UY317_CR51,0,214,317_AL_.jpg">
         </div>
@@ -17,8 +17,6 @@
             <section class="gal-gadot-bio">
                 <a href="https://en.wikipedia.org/wiki/Gal_Gadot">Gal Gadot Varsano</a> (born 30 April 1985) is an Israeli actress and model. At age 18, she was crowned Miss Israel 2004.
                 She then served two years in the Israel Defense Forces as a combat instructor, and began studying law and international relations at IDC Herzliya college while building up her modeling and acting careers.
-                Gadot's first international film role came as <a href="https://en.wikipedia.org/wiki/Gisele_Yashar">Gisele Yashar</a> in <a href="https://en.wikipedia.org/wiki/Fast_%26_Furious_(2009_film)">Fast &amp; Furious</a> (2009), a role she reprised in subsequent installments of <a href="https://en.wikipedia.org/wiki/The_Fast_and_the_Furious">the film franchise</a>.
-                She went on to earn worldwide fame for portraying <a href="https://en.wikipedia.org/wiki/Wonder_Woman">Wonder Woman</a> in the <a href="https://en.wikipedia.org/wiki/DC_Extended_Universe">DC Extended Universe</a>, beginning with <a href="https://en.wikipedia.org/wiki/Batman_v_Superman:_Dawn_of_Justice">Batman v Superman: Dawn of Justice</a> (2016), followed by the solo film <a href="https://en.wikipedia.org/wiki/Wonder_Woman_(2017_film)">Wonder Woman</a> and the ensemble <a href="https://en.wikipedia.org/wiki/Justice_League_(film)">Justice League</a> (both 2017).
             </section>
             <section>
                 <div>
@@ -27,19 +25,18 @@
                 </div>
             </section>
             <section>
-                    <canvas id="my-canvas" class="my-canvas" width="100" height="100"></canvas>
+                    <canvas id="my-canvas" class="my-canvas" width="100" height="50"></canvas>
             </section>
         </div>
     </div>
 
-    <div id="capture-controls" class="capture-controls">
+    <div id="content-to-ignore" class="content-to-ignore">
         <div>
             <button onclick="goCapture()" class="btn">Capture</button>
-            <button onclick="goCopy()" disabled id="btn-copy" class="btn">Copy Result to Clipboard</button>
+            <button onclick="goCopy()" id="btn-copy" class="btn hidden">Copy Text to Clipboard</button>
         </div>
-        <div>
-            <textarea id="output" class="output" title="Output" readonly></textarea>
-        </div>
+        <textarea id="capture-result-text" class="capture-result-text hidden" title="Result Text" readonly></textarea>
+        <iframe id="capture-result-iframe" class="capture-result-iframe hidden"></iframe>
     </div>
     
 </body>
