@@ -57,25 +57,27 @@ You can get this library from these sources:
 ### Syntax
 
 ```sh
-htmlScreenCaptureJs.capture([outputType], [htmlDocument], [options]);
+capture([outputType], [htmlDocument], [options]);
 ```
 
 ### Usage Example
 
-By using defaults:
+#### By ES6 import
+
 ```sh
-let htmlDoc = htmlScreenCaptureJs.capture();
+import { capture, OutputType } from 'html-screen-capture-js';
+...
+const obj = capture();
+const str = capture(OutputType.STRING);
+const str = capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
 ```
-By specifying parameters:
+
+#### By global variable (for ES5)
+
 ```sh
-let str = htmlScreenCaptureJs.capture(
-    htmlScreenCaptureJs.OutputType.STRING,
-    window.document,
-    {
-        'imageFormatForDataUrl': 'image/jpeg',
-        'imageQualityForDataUrl': 1.0
-    }
-);
+const obj = htmlScreenCaptureJs.capture();
+const str = htmlScreenCaptureJs.capture(OutputType.STRING);
+const str = htmlScreenCaptureJs.capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
 ```
 
 ### Parameters
