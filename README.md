@@ -51,6 +51,11 @@ You can get this library from these sources:
 - html-screen-capture.js
 - html-screen-capture.min.js
 
+<a name="bugs"</a>
+## Report a Bug
+
+[Report a bug](https://github.com/html-screen-capture-js/html-screen-capture-js/issues)
+
 <a name="api"></a>
 ## API
 
