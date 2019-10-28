@@ -51,7 +51,7 @@ You can get this library from these sources:
 - html-screen-capture.js
 - html-screen-capture.min.js
 
-<a name="feedback"</a>
+<a name="feedback"></a>
 ## Feedback and Bugs
 
 [Leave feedback or report a bug](https://github.com/html-screen-capture-js/html-screen-capture-js/issues)
