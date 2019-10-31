@@ -11,6 +11,9 @@ This library can be used to:
 - Create a web page screen capture "image", and display the "snapshot" (e.g. by using an iframe).
 - Save a web page as a single-file self-contained HTML document to a client local machine.
 - Send a complete web page content as a simple string to a remote server.
+- Captures your entire screen.
+- Edit with a few clicks is possible.
+
 
 License:
 
