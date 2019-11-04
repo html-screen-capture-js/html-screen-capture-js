@@ -183,9 +183,11 @@ const str = htmlScreenCaptureJs.capture(OutputType.STRING);
 const str = htmlScreenCaptureJs.capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
 ```
 
-### Full Blown Real-Life Usage Example
+### Real-Life Usage Example
 
 ```sh
+import {capture, OutputType} from 'html-screen-capture-js';
+
 ...
 // capture the webpage
 const htmlDocStr = capture(
