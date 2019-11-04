@@ -65,26 +65,6 @@ You can get this library from these sources:
 capture([outputType], [htmlDocument], [options]);
 ```
 
-### Usage Example
-
-#### By ES6 import
-
-```sh
-import { capture, OutputType } from 'html-screen-capture-js';
-...
-const obj = capture();
-const str = capture(OutputType.STRING);
-const str = capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
-```
-
-#### By global variable (for ES5)
-
-```sh
-const obj = htmlScreenCaptureJs.capture();
-const str = htmlScreenCaptureJs.capture(OutputType.STRING);
-const str = htmlScreenCaptureJs.capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
-```
-
 ### Parameters
 
 #### outputType
@@ -182,3 +162,57 @@ The returned value is a new static lightweight HTML document in some format depe
 - If OutputType equals to htmlScreenCaptureJs.OutputType.URI, the return value is a URI-encoded string.
 - If OutputType equals to htmlScreenCaptureJs.OutputType.BASE64, the return value is a Base64-encoded string.  
 - If OutputType is not specified, the return value is an object. 
+
+### Usage Example
+
+#### By ES6 import
+
+```sh
+import { capture, OutputType } from 'html-screen-capture-js';
+...
+const obj = capture();
+const str = capture(OutputType.STRING);
+const str = capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
+```
+
+#### By global variable (for ES5)
+
+```sh
+const obj = htmlScreenCaptureJs.capture();
+const str = htmlScreenCaptureJs.capture(OutputType.STRING);
+const str = htmlScreenCaptureJs.capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
+```
+
+### Full Blown Real-Life Usage Example
+
+```sh
+...
+// capture the webpage
+const htmlDocStr = capture(
+    OutputType.STRING,
+	document,
+	{
+		classesOfIgnoredDocBodyElements: [
+			'modal--error--message',
+			'report-issue-dialog',
+			'modal-backdrop',
+		],
+	}
+);
+
+// zip and covert
+const jsZip = new JSZip();
+jsZip.file('screen-capture.html', htmlDocStr);
+const screenCaptureZipFile = await jsZip.generateAsync({type: 'blob', compression: 'DEFLATE'});
+const screenCaptureZipFileBase64 = await this.convertBlobToBase64(screenCaptureZipFile);
+
+// post to the server
+$.ajax({
+	type: 'POST',
+	url: url,
+	headers: headers,
+	contentType: 'application/json',
+	dataType: 'json',
+	data: JSON.stringify({screenshot: screenCaptureZipFileBase64}),
+});
+```
