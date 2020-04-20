@@ -15,11 +15,17 @@ section {
 }
 label {
     margin-right: 10px;
+    width: 90px;
     font-weight: bold;
 }
 input {
+    width: 200px;
     border: 1px solid #ccc;
     font-family: Helvetica, sans-serif;
+}
+textarea {
+    width: 200px;
+    resize: none;
 }
 a {
     color: #0aa;
@@ -39,6 +45,10 @@ a {
 .gal-gadot-bio {
     margin-top: 0;
     font-size: 14px;
+}
+.form-row {
+    display: flex;
+    justify-content: flex-start;
 }
 .content-to-ignore {
     position: absolute;
