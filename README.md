@@ -202,7 +202,7 @@ const htmlDocStr = capture(
 	}
 );
 
-// zip and covert
+// zip and convert
 const jsZip = new JSZip();
 jsZip.file('screen-capture.html', htmlDocStr);
 const screenCaptureZipFile = await jsZip.generateAsync({type: 'blob', compression: 'DEFLATE'});
