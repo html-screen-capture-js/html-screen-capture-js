@@ -128,18 +128,13 @@ export default class Capturer {
 	}
 	_appendNewStyle(newHtml) {
 		const style = this._doc.createElement('style');
-		style.type = 'text/css';
 		let cssText = this._options.rulesToAddToDocStyle ? this._options.rulesToAddToDocStyle.join('') : '';
 		for (let def in this._classMap) {
 			if (this._classMap.hasOwnProperty(def)) {
 				cssText += ('.' + this._classMap[def] + '{' + def + '}');
 			}
 		}
-		if (style.styleSheet) {
-			style.styleSheet.cssText = cssText;
-		} else {
-			style.appendChild(this._doc.createTextNode(cssText));
-		}
+		style.appendChild(this._doc.createTextNode(cssText));
 		newHtml.children[0].appendChild(style);
 	}
 	_shouldIgnoreElm(domElm) {
