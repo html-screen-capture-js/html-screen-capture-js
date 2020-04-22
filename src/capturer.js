@@ -5,7 +5,7 @@ import OutputTypeEnum from './output-type-enum';
 export default class Capturer {
 	constructor() {
 		this._logger = new Logger();
-		this._isHead = true;
+		this._isBody = false;
 		this._classMap = {};
 		this._classCount = 0;
 		this._shouldHandleImgDataUrl = true;
@@ -139,11 +139,11 @@ export default class Capturer {
 	}
 	_shouldIgnoreElm(domElm) {
 		let shouldRemoveElm = false;
-		if (this._isHead
+		if (!this._isBody
 			&& this._options.tagsOfIgnoredDocHeadElements
 			&& !this._options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())
 			||
-			!this._isHead && this._options.tagsOfIgnoredDocBodyElements
+			this._isBody && this._options.tagsOfIgnoredDocBodyElements
 			&& !this._options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase())) {
 				shouldRemoveElm = true;
 		}
@@ -159,7 +159,7 @@ export default class Capturer {
 				}
 			}
 		}
-		if (!shouldRemoveElm && !this._isHead && this._options.classesOfIgnoredDocBodyElements) {
+		if (!shouldRemoveElm && this._isBody && this._options.classesOfIgnoredDocBodyElements) {
 			const domElmClasses = this._getClasses(domElm);
 			domElmClasses.forEach(c => {
 				if (!shouldRemoveElm && this._options.classesOfIgnoredDocBodyElements.indexOf(c) > -1) {
@@ -170,20 +170,20 @@ export default class Capturer {
 		return shouldRemoveElm;
 	}
 	_recursiveWalk(domElm, newElm, handleCss) {
-		if (this._shouldHandleImgDataUrl && !this._isHead && domElm.tagName === 'IMG') {
+		if (this._shouldHandleImgDataUrl && this._isBody && domElm.tagName === 'IMG') {
 			const imgDataUrl = this._getImgDataUrl(domElm);
 			if (imgDataUrl) {
 				newElm.setAttribute('src', imgDataUrl);
 			}
 		}		
-		if (!this._isHead && domElm.tagName === 'CANVAS') {
+		if (this._isBody && domElm.tagName === 'CANVAS') {
 			const canvasDataUrl = this._getCanvasDataUrl(domElm);
 			if (canvasDataUrl) {
 				newElm.setAttribute('src', canvasDataUrl);
 			}
 			newElm.outerHTML = newElm.outerHTML.replace(/<canvas/g, '<img');			
 		}
-		if (!this._isHead) {
+		if (this._isBody) {
 			Capturer._handleInputs(domElm, newElm);
 		}
 		if (handleCss) {
@@ -210,13 +210,13 @@ export default class Capturer {
 	}
 	_appendNewHead(newHtml) {
 		const newHead = this._doc.head.cloneNode(true);
-		this._isHead = true;
+		this._isBody = false;
 		this._recursiveWalk(this._doc.head, newHead, false);
 		newHtml.appendChild(newHead);
 	}
 	_appendNewBody(newHtml) {
 		const newBody = this._doc.body.cloneNode(true);
-		this._isHead = false;
+		this._isBody = true;
 		this._recursiveWalk(this._doc.body, newBody, true);
 		newHtml.appendChild(newBody);
 	}
