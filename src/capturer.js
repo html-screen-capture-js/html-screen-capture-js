@@ -171,13 +171,13 @@ export default class Capturer {
 		return shouldRemoveElm;
 	}
 	_recursiveWalk(domElm, newElm, handleCss) {
-		if (this._shouldHandleImgDataUrl && !this._isHead && domElm.tagName.toLowerCase() === 'img') {
+		if (this._shouldHandleImgDataUrl && !this._isHead && domElm.tagName === 'IMG') {
 			const imgDataUrl = this._getImgDataUrl(domElm);
 			if (imgDataUrl) {
 				newElm.setAttribute('src', imgDataUrl);
 			}
 		}		
-		if (!this._isHead && domElm.tagName.toLowerCase() === 'canvas') {
+		if (!this._isHead && domElm.tagName === 'CANVAS') {
 			const canvasDataUrl = this._getCanvasDataUrl(domElm);
 			if (canvasDataUrl) {
 				newElm.setAttribute('src', canvasDataUrl);
