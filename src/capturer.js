@@ -109,12 +109,14 @@ export default class Capturer {
 			newElm.setAttribute('class', classStr.trim());
 		}
 	}
-	static _handleElmValue(domElm, newElm) {
-		if (domElm.tagName.toLowerCase() === 'input' && domElm.getAttribute('type') === 'text') {
+	static _handleInputs(domElm, newElm) {
+		if (domElm.tagName.toLowerCase() === 'input' && domElm.value && domElm.getAttribute('type') === 'text') {
 			newElm.setAttribute('value', domElm.value);
-		} else if(domElm.tagName.toLowerCase() === 'textarea') {
+		} else if(domElm.tagName.toLowerCase() === 'textarea' && domElm.value) {
 			newElm.innerText = domElm.value;
-		} else if (domElm.tagName.toLowerCase() === 'select' && domElm.children) {
+		} else if(domElm.tagName.toLowerCase() === 'input' && domElm.getAttribute('type') === 'checkbox' && domElm.checked) {
+			newElm.setAttribute('checked', 'checked');
+		} else if (domElm.tagName.toLowerCase() === 'select' && domElm.value && domElm.children) {
 			newElm.setAttribute('value', domElm.value);
 			for (let i = domElm.children.length - 1; i >= 0; i--) {
 				if (domElm.children[i].getAttribute('value') === domElm.value) {
@@ -182,8 +184,8 @@ export default class Capturer {
 			}
 			newElm.outerHTML = newElm.outerHTML.replace(/<canvas/g, '<img');			
 		}
-		if (domElm.value) {
-			Capturer._handleElmValue(domElm, newElm);
+		if (!this._isHead) {
+			Capturer._handleInputs(domElm, newElm);
 		}
 		if (handleCss) {
 			this._handleElmCss(domElm, newElm);

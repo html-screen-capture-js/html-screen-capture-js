@@ -23,6 +23,9 @@ input {
     border: 1px solid #ccc;
     font-family: Helvetica, sans-serif;
 }
+input[type="checkbox"] {
+    width: auto;
+}
 textarea {
     width: 200px;
     resize: none;
