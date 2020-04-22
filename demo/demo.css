@@ -15,7 +15,7 @@ section {
 }
 label {
     margin-right: 10px;
-    width: 90px;
+    width: 120px;
     font-weight: bold;
 }
 input {
@@ -25,6 +25,7 @@ input {
 }
 input[type="checkbox"] {
     width: auto;
+    margin: 3px 0;
 }
 textarea {
     width: 200px;
