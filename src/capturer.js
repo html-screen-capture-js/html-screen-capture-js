@@ -23,16 +23,13 @@ export default class Capturer {
 			prefixForNewGeneratedClasses: 'c',
 			imageFormatForDataUrl: 'image/png',
 			imageQualityForDataUrl: 0.92,
-			rulesToAddToDocStyle: []
+			rulesToAddToDocStyle: [],
+			logLevel: 'warn'
 		};
 	}
-	_overrideOptions(options) {
+	_handleOptions(options) {
 		if (options) {
-			for (let def in options) {
-				if (options.hasOwnProperty(def)) {
-					this._options[def] = options[def];
-				}
-			}
+			this._options = {...this._options, ...options};
 		}
 	}
 	_getCanvasDataUrl(canvasElm) {
@@ -100,7 +97,7 @@ export default class Capturer {
 			let className = this._classMap[mapKey];
 			if (!className) {
 				this._classCount++;
-				className = (this._options.prefixForNewGeneratedClasses ? this._options.prefixForNewGeneratedClasses : 'c') + this._classCount;
+				className = (this._options.prefixForNewGeneratedClasses || 'c') + this._classCount;
 				this._classMap[mapKey] = className;
 			}
 			classStr += (className + ' ');
@@ -110,7 +107,7 @@ export default class Capturer {
 		}
 	}
 	static _handleInputs(domElm, newElm) {
-		if (domElm.tagName === 'INPUT' && domElm.value && domElm.getAttribute('type') === 'text') {
+		if (domElm.tagName === 'INPUT' && domElm.getAttribute('type') === 'text' && domElm.value) {
 			newElm.setAttribute('value', domElm.value);
 		} else if(domElm.tagName === 'TEXTAREA' && domElm.value) {
 			newElm.innerText = domElm.value;
@@ -125,6 +122,8 @@ export default class Capturer {
 					newElm.children[i].removeAttribute('selected');
 				}
 			}
+		} else if(domElm.value) {
+			newElm.setAttribute('value', domElm.value);
 		}
 	}
 	_appendNewStyle(newHtml) {
@@ -145,16 +144,21 @@ export default class Capturer {
 	}
 	_shouldIgnoreElm(domElm) {
 		let shouldRemoveElm = false;
-		if (this._isHead && this._options.tagsOfIgnoredDocHeadElements && this._options.tagsOfIgnoredDocHeadElements.indexOf(domElm.tagName.toLowerCase()) > -1 ||
-		!this._isHead && this._options.tagsOfIgnoredDocBodyElements && this._options.tagsOfIgnoredDocBodyElements.indexOf(domElm.tagName.toLowerCase()) > -1) {
-			shouldRemoveElm = true;
+		if (this._isHead
+			&& this._options.tagsOfIgnoredDocHeadElements
+			&& !this._options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())
+			||
+			!this._isHead && this._options.tagsOfIgnoredDocBodyElements
+			&& !this._options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase())) {
+				shouldRemoveElm = true;
 		}
 		if (!shouldRemoveElm && this._options.attrKeyValuePairsOfIgnoredElements) {
 			for (let attrKey in this._options.attrKeyValuePairsOfIgnoredElements) {
 				if (this._options.attrKeyValuePairsOfIgnoredElements.hasOwnProperty(attrKey)) {
 					for (let i = 0; i < domElm.attributes.length; i++) {
-						if (domElm.attributes[i].specified && domElm.attributes[i].value === this._options.attrKeyValuePairsOfIgnoredElements[attrKey]) {
-							shouldRemoveElm = true;
+						if (domElm.attributes[i].specified
+							&& domElm.attributes[i].value === this._options.attrKeyValuePairsOfIgnoredElements[attrKey]) {
+								shouldRemoveElm = true;
 						}
 					}
 				}
@@ -189,8 +193,9 @@ export default class Capturer {
 		}
 		if (handleCss) {
 			this._handleElmCss(domElm, newElm);
-			if (this._options.tagsOfSkippedElementsForChildTreeCssHandling && this._options.tagsOfSkippedElementsForChildTreeCssHandling.indexOf(domElm.tagName.toLowerCase()) > -1) {
-				handleCss = false;
+			if (this._options.tagsOfSkippedElementsForChildTreeCssHandling
+				&& !this._options.tagsOfSkippedElementsForChildTreeCssHandling.includes(domElm.tagName.toLowerCase())) {
+					handleCss = false;
 			}
 		}
 		if (domElm.children) {
@@ -254,7 +259,7 @@ export default class Capturer {
 		let output = null;
 		const startTime = (new Date()).getTime();
 		try {
-			this._overrideOptions(options);
+			this._handleOptions(options);
 			this._doc = htmlDocument || document;
 			this._logger.setLogLevel(this._options.logLevel);
 			this._logger.info(`capture() outputType: ${outputType} - start`);
