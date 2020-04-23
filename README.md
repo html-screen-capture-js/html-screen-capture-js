@@ -83,6 +83,12 @@ An optional object-type parameter, specifying the HTML document to capture. If n
 #### options
 An optional object-type parameter with key-value pairs. You can change any default option value by defining a similarly named property on this object. If not specified (falsey), or specified but defining only some of the properties - default values are used for all non-defined properties.
 
+##### rulesToAddToDocStyle 
+
+- Type: Array of strings 
+- Default: [ ] //an empty array
+- CSS rules to add to the newly created HTML document.
+
 ##### tagsOfIgnoredDocHeadElements
 
 - Type: Array of strings
@@ -142,12 +148,6 @@ An optional object-type parameter with key-value pairs. You can change any defau
 - Type: Number
 - Default: 0.92
 - The image quality to use when images are replaced with base64 data - relevant only for some image formats. A valid value is any number between 0 and 1. 
-
-##### rulesToAddToDocStyle 
-
-- Type: Array of strings 
-- Default: [ ] //an empty array
-- CSS rules to add to the newly created HTML document.
 
 ##### logLevel
 
