@@ -196,7 +196,7 @@ const htmlDocStr = capture(
 	document,
 	{
 		rulesToAddToDocStyle: [
-			'*, *::before, *::after {letter-spacing: -0.3px !important;}'
+			'*, *::before, *::after {letter-spacing: -0.3px !important;}',
 		],
 		classesOfIgnoredDocBodyElements: [
 			'modal--error--message',
