@@ -105,15 +105,15 @@ export default class Capturer {
         const tag_name = domElm.tagName;
 		if (tag_name === 'INPUT' && dom_type === 'text' && domElm.value) {
 			newElm.setAttribute('value', domElm.value);
-		} else if(tag_name === 'TEXTAREA' && domElm.value) {
+		} else if (tag_name === 'TEXTAREA' && domElm.value) {
 			newElm.innerText = domElm.value;
-		} else if(tag_name === 'INPUT' && (dom_type === 'checkbox' || dom_type === 'radio')) {
-		    if(domElm.checked) {
-			newElm.setAttribute('checked', true);
-		    }else{
-			newElm.removeAttribute("checked");
+		} else if (tag_name === 'INPUT' && (dom_type === 'checkbox' || dom_type === 'radio')) {
+		    if (domElm.checked) {
+				newElm.setAttribute('checked', true);
+		    } else {
+				newElm.removeAttribute('checked');
 		    }
-        	} else if (tag_name === 'SELECT' && domElm.value && domElm.children) {
+        } else if (tag_name === 'SELECT' && domElm.value && domElm.children) {
 			newElm.setAttribute('value', domElm.value);
 			for (let i = domElm.children.length - 1; i >= 0; i--) {
 				if (domElm.children[i].getAttribute('value') === domElm.value) {
@@ -122,7 +122,7 @@ export default class Capturer {
 					newElm.children[i].removeAttribute('selected');
 				}
 			}
-		} else if(domElm.value) {
+		} else if (domElm.value) {
 			newElm.setAttribute('value', domElm.value);
 		}
 	}
