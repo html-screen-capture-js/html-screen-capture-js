@@ -195,14 +195,14 @@ const htmlDocStr = capture(
 	OutputType.STRING,
 	document,
 	{
+		rulesToAddToDocStyle: [
+			'*, *::before, *::after {letter-spacing: -0.3px !important;}'
+		],
 		classesOfIgnoredDocBodyElements: [
 			'modal--error--message',
 			'report-issue-dialog',
 			'modal-backdrop',
-		],
-		rulesToAddToDocStyle: [
-			'*,*::before,*::after {letter-spacing: -0.3px !important;}'
-		],
+		],		
 	}
 );
 
