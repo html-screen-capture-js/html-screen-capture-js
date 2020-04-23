@@ -200,6 +200,9 @@ const htmlDocStr = capture(
 			'report-issue-dialog',
 			'modal-backdrop',
 		],
+		rulesToAddToDocStyle: [
+			'*,*::before,*::after {letter-spacing: -0.3px !important;}'
+		],
 	}
 );
 
