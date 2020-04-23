@@ -12,24 +12,22 @@ export default class Capturer {
 		this._canvas = null;
 		this._ctx = null;
 		this._doc = null;
-		this._options = {
-			tagsOfIgnoredDocHeadElements: ['script', 'link', 'style'],
-			tagsOfIgnoredDocBodyElements: ['script'],
-			classesOfIgnoredDocBodyElements: [],
-			attrKeyValuePairsOfIgnoredElements: {},
-			tagsOfSkippedElementsForChildTreeCssHandling: ['svg'],
-			attrKeyForSavingElementOrigClass: '_class',
-			attrKeyForSavingElementOrigStyle: '_style',
-			prefixForNewGeneratedClasses: 'c',
-			imageFormatForDataUrl: 'image/png',
-			imageQualityForDataUrl: 0.92,
-			rulesToAddToDocStyle: [],
-			logLevel: 'warn'
-		};
+		this._options = {};
 	}
 	_handleOptions(options) {
-		if (options) {
-			this._options = {...this._options, ...options};
+		this._options = {
+			rulesToAddToDocStyle: (options && options.rulesToAddToDocStyle) || [],
+			tagsOfIgnoredDocHeadElements: (options && options.tagsOfIgnoredDocHeadElements) || ['script', 'link', 'style'],
+			tagsOfIgnoredDocBodyElements: (options && options.tagsOfIgnoredDocBodyElements) || ['script'],
+			classesOfIgnoredDocBodyElements: (options && options.classesOfIgnoredDocBodyElements) || [],
+			attrKeyValuePairsOfIgnoredElements: (options && options.attrKeyValuePairsOfIgnoredElements) || {},
+			tagsOfSkippedElementsForChildTreeCssHandling: (options && options.tagsOfSkippedElementsForChildTreeCssHandling) || ['svg'],
+			attrKeyForSavingElementOrigClass: (options && options.attrKeyForSavingElementOrigClass) || '_class',
+			attrKeyForSavingElementOrigStyle: (options && options.attrKeyForSavingElementOrigStyle) || '_style',
+			prefixForNewGeneratedClasses: (options && options.prefixForNewGeneratedClasses) || 'c',
+			imageFormatForDataUrl: (options && options.imageFormatForDataUrl) || 'image/png',
+			imageQualityForDataUrl: (options && options.imageQualityForDataUrl) || 0.92,
+			logLevel: (options && options.logLevel) || 'warn'
 		}
 	}
 	_getCanvasDataUrl(canvasElm) {
@@ -77,15 +75,11 @@ export default class Capturer {
 	}
 	_handleElmCss(domElm, newElm) {
 		if (this._getClasses(newElm).length > 0) {
-			if (this._options.attrKeyForSavingElementOrigClass) {
-				newElm.setAttribute(this._options.attrKeyForSavingElementOrigClass, Capturer._getClassName(newElm));
-			}
+			newElm.setAttribute(this._options.attrKeyForSavingElementOrigClass, Capturer._getClassName(newElm));
 			newElm.removeAttribute('class');
 		}
 		if (newElm.getAttribute('style')) {
-			if (this._options.attrKeyForSavingElementOrigStyle) {
-				newElm.setAttribute(this._options.attrKeyForSavingElementOrigStyle, newElm.getAttribute('style'));
-			}
+			newElm.setAttribute(this._options.attrKeyForSavingElementOrigStyle, newElm.getAttribute('style'));
 			newElm.removeAttribute('style');
 		}
 		const computedStyle = getComputedStyle(domElm);
@@ -97,7 +91,7 @@ export default class Capturer {
 			let className = this._classMap[mapKey];
 			if (!className) {
 				this._classCount++;
-				className = (this._options.prefixForNewGeneratedClasses || 'c') + this._classCount;
+				className = `${this._options.prefixForNewGeneratedClasses}${this._classCount}`;
 				this._classMap[mapKey] = className;
 			}
 			classStr += (className + ' ');
@@ -128,7 +122,7 @@ export default class Capturer {
 	}
 	_appendNewStyle(newHtml) {
 		const style = this._doc.createElement('style');
-		let cssText = this._options.rulesToAddToDocStyle ? this._options.rulesToAddToDocStyle.join('') : '';
+		let cssText = this._options.rulesToAddToDocStyle.join('');
 		for (let def in this._classMap) {
 			if (this._classMap.hasOwnProperty(def)) {
 				cssText += ('.' + this._classMap[def] + '{' + def + '}');
@@ -139,15 +133,11 @@ export default class Capturer {
 	}
 	_shouldIgnoreElm(domElm) {
 		let shouldRemoveElm = false;
-		if (!this._isBody
-			&& this._options.tagsOfIgnoredDocHeadElements
-			&& !this._options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())
-			||
-			this._isBody && this._options.tagsOfIgnoredDocBodyElements
-			&& !this._options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase())) {
+		if (!this._isBody && this._options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())
+			|| this._isBody && this._options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase())) {
 				shouldRemoveElm = true;
 		}
-		if (!shouldRemoveElm && this._options.attrKeyValuePairsOfIgnoredElements) {
+		if (!shouldRemoveElm) {
 			for (let attrKey in this._options.attrKeyValuePairsOfIgnoredElements) {
 				if (this._options.attrKeyValuePairsOfIgnoredElements.hasOwnProperty(attrKey)) {
 					for (let i = 0; i < domElm.attributes.length; i++) {
@@ -159,10 +149,10 @@ export default class Capturer {
 				}
 			}
 		}
-		if (!shouldRemoveElm && this._isBody && this._options.classesOfIgnoredDocBodyElements) {
+		if (!shouldRemoveElm && this._isBody) {
 			const domElmClasses = this._getClasses(domElm);
 			domElmClasses.forEach(c => {
-				if (!shouldRemoveElm && this._options.classesOfIgnoredDocBodyElements.indexOf(c) > -1) {
+				if (this._options.classesOfIgnoredDocBodyElements.includes(c)) {
 					shouldRemoveElm = true;
 				}
 			})
@@ -188,9 +178,8 @@ export default class Capturer {
 		}
 		if (handleCss) {
 			this._handleElmCss(domElm, newElm);
-			if (this._options.tagsOfSkippedElementsForChildTreeCssHandling
-				&& !this._options.tagsOfSkippedElementsForChildTreeCssHandling.includes(domElm.tagName.toLowerCase())) {
-					handleCss = false;
+			if (this._options.tagsOfSkippedElementsForChildTreeCssHandling.includes(domElm.tagName.toLowerCase())) {
+				handleCss = false;
 			}
 		}
 		if (domElm.children) {
