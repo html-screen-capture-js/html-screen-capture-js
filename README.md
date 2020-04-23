@@ -193,7 +193,7 @@ import {capture, OutputType} from 'html-screen-capture-js';
 // capture the webpage
 const htmlDocStr = capture(
 	OutputType.STRING,
-	document,
+	window.document,
 	{
 		rulesToAddToDocStyle: [
 			'*, *::before, *::after {letter-spacing: -0.3px !important;}',
