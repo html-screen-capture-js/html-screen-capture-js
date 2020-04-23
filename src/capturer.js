@@ -123,41 +123,39 @@ export default class Capturer {
 	_appendNewStyle(newHtml) {
 		const style = this._doc.createElement('style');
 		let cssText = this._options.rulesToAddToDocStyle.join('');
-		for (let def in this._classMap) {
-			if (this._classMap.hasOwnProperty(def)) {
-				cssText += ('.' + this._classMap[def] + '{' + def + '}');
-			}
+		for (const [k, v] of Object.entries(this._classMap)) {
+			cssText += `.${v}{${k}}`;
 		}
 		style.appendChild(this._doc.createTextNode(cssText));
 		newHtml.children[0].appendChild(style);
 	}
 	_shouldIgnoreElm(domElm) {
-		let shouldRemoveElm = false;
+		let shouldIgnoreElm = false;
 		if (!this._isBody && this._options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())
 			|| this._isBody && this._options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase())) {
-				shouldRemoveElm = true;
+				shouldIgnoreElm = true;
 		}
-		if (!shouldRemoveElm) {
-			for (let attrKey in this._options.attrKeyValuePairsOfIgnoredElements) {
-				if (this._options.attrKeyValuePairsOfIgnoredElements.hasOwnProperty(attrKey)) {
-					for (let i = 0; i < domElm.attributes.length; i++) {
-						if (domElm.attributes[i].specified
-							&& domElm.attributes[i].value === this._options.attrKeyValuePairsOfIgnoredElements[attrKey]) {
-								shouldRemoveElm = true;
+		if (!shouldIgnoreElm) {
+			for (let i = 0; i < domElm.attributes.length; i++) {
+				if (domElm.attributes[i].specified) {
+					for (const [k, v] of Object.entries(this._options.attrKeyValuePairsOfIgnoredElements)) {
+						if (k === domElm.attributes[i].name && v === domElm.attributes[i].value) {
+							shouldIgnoreElm = true;
+							break;
 						}
 					}
 				}
 			}
 		}
-		if (!shouldRemoveElm && this._isBody) {
+		if (!shouldIgnoreElm && this._isBody) {
 			const domElmClasses = this._getClasses(domElm);
 			domElmClasses.forEach(c => {
 				if (this._options.classesOfIgnoredDocBodyElements.includes(c)) {
-					shouldRemoveElm = true;
+					shouldIgnoreElm = true;
 				}
 			})
 		}
-		return shouldRemoveElm;
+		return shouldIgnoreElm;
 	}
 	_recursiveWalk(domElm, newElm, handleCss) {
 		if (this._shouldHandleImgDataUrl && this._isBody && domElm.tagName === 'IMG') {
@@ -219,16 +217,17 @@ export default class Capturer {
 	_prepareOutput(newHtmlObject, outputType) {
 		let output = null;
 		const outputTypeEnum = new OutputTypeEnum();
-		if (!outputType || (outputType.toLowerCase() === outputTypeEnum.OBJECT)) {
+		const oType = (outputType || outputTypeEnum.OBJECT).toLowerCase();
+		if (oType === outputTypeEnum.OBJECT) {
 			output = newHtmlObject;
 		} else {
 			const outerHtml = (newHtmlObject ? (newHtmlObject.outerHTML) : '') || '';
 			if (outerHtml) {
-				if (outputType.toLowerCase() === outputTypeEnum.STRING) {
+				if (oType === outputTypeEnum.STRING) {
 					output = outerHtml;
-				} else if (outputType.toLowerCase() === outputTypeEnum.URI) {
+				} else if (oType === outputTypeEnum.URI) {
 					output = Encoder.uriEncode(outerHtml);
-				} else if (outputType.toLowerCase() === outputTypeEnum.BASE64) {
+				} else if (oType === outputTypeEnum.BASE64) {
 					output = Encoder.base64Encode(outerHtml);
 				}
 			}
