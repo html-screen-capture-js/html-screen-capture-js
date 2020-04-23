@@ -108,12 +108,12 @@ export default class Capturer {
 		} else if(tag_name === 'TEXTAREA' && domElm.value) {
 			newElm.innerText = domElm.value;
 		} else if(tag_name === 'INPUT' && (dom_type === 'checkbox' || dom_type === 'radio')) {
-            if(domElm.checked) {
-                newElm.setAttribute('checked', true);
-            }else{
-                newElm.removeAttribute("checked");
-            }
-        } else if (tag_name === 'SELECT' && domElm.value && domElm.children) {
+		    if(domElm.checked) {
+			newElm.setAttribute('checked', true);
+		    }else{
+			newElm.removeAttribute("checked");
+		    }
+        	} else if (tag_name === 'SELECT' && domElm.value && domElm.children) {
 			newElm.setAttribute('value', domElm.value);
 			for (let i = domElm.children.length - 1; i >= 0; i--) {
 				if (domElm.children[i].getAttribute('value') === domElm.value) {
