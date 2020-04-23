@@ -101,13 +101,19 @@ export default class Capturer {
 		}
 	}
 	static _handleInputs(domElm, newElm) {
-		if (domElm.tagName === 'INPUT' && domElm.getAttribute('type') === 'text' && domElm.value) {
+        const dom_type = domElm.getAttribute('type');
+        const tag_name = domElm.tagName;
+		if (tag_name === 'INPUT' && dom_type === 'text' && domElm.value) {
 			newElm.setAttribute('value', domElm.value);
-		} else if(domElm.tagName === 'TEXTAREA' && domElm.value) {
+		} else if(tag_name === 'TEXTAREA' && domElm.value) {
 			newElm.innerText = domElm.value;
-		} else if(domElm.tagName === 'INPUT' && domElm.getAttribute('type') === 'checkbox' && domElm.checked) {
-			newElm.setAttribute('checked', 'checked');
-		} else if (domElm.tagName === 'SELECT' && domElm.value && domElm.children) {
+		} else if(tag_name === 'INPUT' && (dom_type === 'checkbox' || dom_type === 'radio')) {
+		    if(domElm.checked) {
+			newElm.setAttribute('checked', true);
+		    }else{
+			newElm.removeAttribute("checked");
+		    }
+        	} else if (tag_name === 'SELECT' && domElm.value && domElm.children) {
 			newElm.setAttribute('value', domElm.value);
 			for (let i = domElm.children.length - 1; i >= 0; i--) {
 				if (domElm.children[i].getAttribute('value') === domElm.value) {
