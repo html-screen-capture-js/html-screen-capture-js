@@ -199,9 +199,8 @@ const htmlDocStr = capture(
 			'*, *::before, *::after {letter-spacing: -0.3px !important;}',
 		],
 		classesOfIgnoredDocBodyElements: [
-			'modal--error--message',
-			'report-issue-dialog',
-			'modal-backdrop',
+			'modal-dialog--error',
+			'modal-dialog-backdrop',
 		],		
 	}
 );
