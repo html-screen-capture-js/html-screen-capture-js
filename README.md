@@ -191,7 +191,7 @@ import {capture, OutputType} from 'html-screen-capture-js';
 ...
 // capture the webpage
 const htmlDocStr = capture(
-    OutputType.STRING,
+	OutputType.STRING,
 	document,
 	{
 		classesOfIgnoredDocBodyElements: [
