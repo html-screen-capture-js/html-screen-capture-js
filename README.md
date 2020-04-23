@@ -4,7 +4,7 @@
 [![NPM version](https://img.shields.io/npm/v/html-screen-capture-js.svg)](https://www.npmjs.com/package/html-screen-capture-js)
 [![Github Release](https://img.shields.io/github/release/html-screen-capture-js/html-screen-capture-js/all.svg)](https://github.com/html-screen-capture-js/html-screen-capture-js/releases)
 
-A small javascript library that gets a web page, and returns a new lightweight self-contained HTML DOM document. The library removes all external file dependencies while preserving the original appearance.
+A tiny 11KB javascript library that gets a web page, and returns a new lightweight self-contained HTML DOM document. The library removes all external file dependencies while preserving the original appearance.
 
 This library can be used to:
 
@@ -14,7 +14,7 @@ This library can be used to:
 
 License:
 
-- Usage permission is only granted to those who acknowledge that Gal Gadot is a perfect human being.
+- Free (MIT).
 
 <a name="demo"></a>
 ## Try the Demo
