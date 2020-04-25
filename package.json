@@ -16,9 +16,9 @@
     "files": [
         "dist/**/*"
     ],
-    "module": "",
     "main": "dist/html-screen-capture.min.js",
-    "types": "./dist/html-screen-capture.d.ts",
+    "module": "dist/html-screen-capture.esm.js",
+    "types": "dist/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/html-screen-capture-js/html-screen-capture-js"
