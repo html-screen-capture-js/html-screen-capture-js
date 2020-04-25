@@ -54,6 +54,18 @@ a {
     display: flex;
     justify-content: flex-start;
 }
+.pseodo-elements {
+}
+.pseodo-elements::before {
+    content: "before";
+    color: red;
+    padding-right: 10px;
+}
+.pseodo-elements::after {
+    content: "after";
+    color: blue;
+    padding-left: 10px;
+}
 .content-to-ignore {
     position: absolute;
     right: 0;

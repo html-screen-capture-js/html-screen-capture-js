@@ -137,6 +137,12 @@ An optional object-type parameter with key-value pairs. You can change any defau
 - Default: 'c'
 - The prefix to use for all newly created classes - the suffix is a number.
 
+##### prefixForNewGeneratedPseudoClasses
+
+- Type: String
+- Default: 'p'
+- The prefix to use for all newly created pseudo classes - the suffix is a number.
+
 ##### imageFormatForDataUrl
 
 - Type: String

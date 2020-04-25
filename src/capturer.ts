@@ -17,6 +17,7 @@ export interface CaptureOptions {
     attrKeyForSavingElementOrigClass: string;
     attrKeyForSavingElementOrigStyle: string;
     prefixForNewGeneratedClasses: string;
+    prefixForNewGeneratedPseudoClasses: string;
     imageFormatForDataUrl: string;
     imageQualityForDataUrl: number;
     logLevel: LogLevels;
@@ -34,6 +35,7 @@ const defaultOptions = {
     attrKeyForSavingElementOrigClass: '_class',
     attrKeyForSavingElementOrigStyle: '_style',
     prefixForNewGeneratedClasses: 'c',
+    prefixForNewGeneratedPseudoClasses: 'p',
     imageFormatForDataUrl: 'image/png',
     imageQualityForDataUrl: 0.92,
     logLevel: LogLevels.WARN,
@@ -43,6 +45,8 @@ export class Capturer {
     isBody = false;
     classMap: Map<string, string> = new Map<string, string>();
     classCount = 0;
+    pseudoStyles: Array<string> = [];
+    pseudoClassCount = 0;
     shouldHandleImgDataUrl = true;
     canvas: HTMLCanvasElement | null = null;
     ctx: CanvasRenderingContext2D | null = null;
@@ -79,8 +83,8 @@ export class Capturer {
         return imgDataUrl;
     }
 
-    private getClasses(domElm: Element): string[] {
-        const className = this.getClassName(domElm);
+    private static getClasses(domElm: Element): string[] {
+        const className = Capturer.getClassName(domElm);
         const classNames = className ? className.split(' ') : [];
         return classNames.reduce((result: string[], c: string) => {
             if (c) {
@@ -90,14 +94,14 @@ export class Capturer {
         }, [] as string[]);
     }
 
-    private getClassName(domElm: Element): string {
+    private static getClassName(domElm: Element): string {
         const className = domElm instanceof SVGAnimateElement ? domElm.className.baseVal : domElm.className;
         return className || '';
     }
 
     private handleElmCss(domElm: Element, newElm: Element): void {
-        if (this.getClasses(newElm).length > 0) {
-            newElm.setAttribute(this.options.attrKeyForSavingElementOrigClass, this.getClassName(newElm));
+        if (Capturer.getClasses(newElm).length > 0) {
+            newElm.setAttribute(this.options.attrKeyForSavingElementOrigClass, Capturer.getClassName(newElm));
             newElm.removeAttribute('class');
         }
         if (newElm.getAttribute('style')) {
@@ -119,12 +123,29 @@ export class Capturer {
             }
             classStr += className + ' ';
         }
+
+        for (const pseudoType of ['::before', '::after']) {
+            const computedStyle = getComputedStyle(domElm, pseudoType);
+            if (!['none', 'normal'].includes(computedStyle.content)) {
+                this.pseudoClassCount++;
+                const className = `${this.options.prefixForNewGeneratedPseudoClasses}${this.pseudoClassCount}`;
+                classStr += className + ' ';
+                this.pseudoStyles.push(`.${className}${pseudoType}{`);
+                for (let i = 0; i < computedStyle.length; i++) {
+                    const property = computedStyle.item(i);
+                    const value = computedStyle.getPropertyValue(property);
+                    this.pseudoStyles.push(`${property}:${value};`);
+                }
+                this.pseudoStyles.push('}');
+            }
+        }
+
         if (classStr) {
             newElm.setAttribute('class', classStr.trim());
         }
     }
 
-    private handleInputs(domElm: Element, newElm: Element): void {
+    private static handleInputs(domElm: Element, newElm: Element): void {
         if (!(domElm instanceof HTMLInputElement)) {
             return;
         }
@@ -159,6 +180,7 @@ export class Capturer {
         this.classMap.forEach((v, k) => {
             cssText += `.${v}{${k}}`;
         });
+        cssText += cssText += this.pseudoStyles.join('');
         style.appendChild(this.doc.createTextNode(cssText));
         newHtml.children[0].appendChild(style);
     }
@@ -184,8 +206,8 @@ export class Capturer {
             }
         }
         if (!shouldIgnoreElm && this.isBody) {
-            const domElmClasses = this.getClasses(domElm);
-            domElmClasses.forEach((c) => {
+            const domElmClasses = Capturer.getClasses(domElm);
+            domElmClasses.forEach((c: string) => {
                 if (this.options.classesOfIgnoredDocBodyElements.includes(c)) {
                     shouldIgnoreElm = true;
                 }
@@ -209,7 +231,7 @@ export class Capturer {
             newElm.outerHTML = newElm.outerHTML.replace(/<canvas/g, '<img');
         }
         if (this.isBody) {
-            this.handleInputs(domElm, newElm);
+            Capturer.handleInputs(domElm, newElm);
         }
         if (handleCss) {
             this.handleElmCss(domElm, newElm);
@@ -258,7 +280,7 @@ export class Capturer {
         return newHtml;
     }
 
-    private prepareOutput(newHtmlObject: HTMLElement, outputType = OutputType.OBJECT): string | HTMLElement {
+    private static prepareOutput(newHtmlObject: HTMLElement, outputType = OutputType.OBJECT): string | HTMLElement {
         let output = null;
         if (outputType === OutputType.OBJECT) {
             output = newHtmlObject;
@@ -290,7 +312,7 @@ export class Capturer {
             logger.setLogLevel(this.options.logLevel);
             logger.info(`capture() outputType: ${outputType} - start`);
             const newHtmlObject = this.getHtmlObject();
-            output = this.prepareOutput(newHtmlObject, outputType);
+            output = Capturer.prepareOutput(newHtmlObject, outputType);
         } catch (ex) {
             logger.error(`capture() - error - ${ex.message}`);
         } finally {
