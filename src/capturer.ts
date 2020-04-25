@@ -111,10 +111,10 @@ export class Capturer {
             const property = computedStyle.item(i);
             const value = computedStyle.getPropertyValue(property);
             const mapKey = property + ':' + value;
-            const className: string = this.classMap.get(mapKey) || '';
+            let className: string = this.classMap.get(mapKey) || '';
             if (!className) {
                 this.classCount++;
-                const className = `${this.options.prefixForNewGeneratedClasses}${this.classCount}`;
+                className = `${this.options.prefixForNewGeneratedClasses}${this.classCount}`;
                 this.classMap.set(mapKey, className);
             }
             classStr += className + ' ';
