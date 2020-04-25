@@ -71,11 +71,7 @@ capture([outputType], [htmlDocument], [options]);
 #### outputType
 An optional enum-type parameter, specifying the desired output. If not specified (falsey) - output will be returned as an object.
 
-A valid value is one of these:
-- htmlScreenCapturer.OutputType.OBJECT
-- htmlScreenCapturer.OutputType.STRING
-- htmlScreenCapturer.OutputType.URI
-- htmlScreenCapturer.OutputType.BASE64
+- A valid value is one of these: 'object' | 'string' | 'uri' | 'base64'
 
 #### htmlDocument
 An optional object-type parameter, specifying the HTML document to capture. If not specified (falsey) - window.document is used.
