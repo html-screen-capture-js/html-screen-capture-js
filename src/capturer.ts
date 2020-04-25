@@ -1,4 +1,4 @@
-import { logger, LogLevels } from './logger';
+import { logger, LogLevel } from './logger';
 import { base64Encode, uriEncode } from './encoder';
 
 export enum OutputType {
@@ -8,6 +8,22 @@ export enum OutputType {
     BASE64 = 'base64',
 }
 export interface CaptureOptions {
+    rulesToAddToDocStyle?: string[];
+    tagsOfIgnoredDocHeadElements?: string[];
+    tagsOfIgnoredDocBodyElements?: string[];
+    classesOfIgnoredDocBodyElements?: string[];
+    attrKeyValuePairsOfIgnoredElements?: {};
+    tagsOfSkippedElementsForChildTreeCssHandling?: string[];
+    attrKeyForSavingElementOrigClass?: string;
+    attrKeyForSavingElementOrigStyle?: string;
+    prefixForNewGeneratedClasses?: string;
+    prefixForNewGeneratedPseudoClasses?: string;
+    imageFormatForDataUrl?: string;
+    imageQualityForDataUrl?: number;
+    logLevel?: LogLevel;
+}
+
+interface Options {
     rulesToAddToDocStyle: string[];
     tagsOfIgnoredDocHeadElements: string[];
     tagsOfIgnoredDocBodyElements: string[];
@@ -20,7 +36,7 @@ export interface CaptureOptions {
     prefixForNewGeneratedPseudoClasses: string;
     imageFormatForDataUrl: string;
     imageQualityForDataUrl: number;
-    logLevel: LogLevels;
+    logLevel: LogLevel;
 }
 
 export type CapturerOutput = string | HTMLElement | null;
@@ -38,7 +54,7 @@ const defaultOptions = {
     prefixForNewGeneratedPseudoClasses: 'p',
     imageFormatForDataUrl: 'image/png',
     imageQualityForDataUrl: 0.92,
-    logLevel: LogLevels.WARN,
+    logLevel: LogLevel.WARN,
 };
 
 interface CapturerContext {
@@ -50,7 +66,7 @@ interface CapturerContext {
     shouldHandleImgDataUrl: boolean;
     canvas: HTMLCanvasElement | null;
     doc: HTMLDocument;
-    options: CaptureOptions;
+    options: Options;
 }
 
 const getClassName = (domElm: Element): string => {
