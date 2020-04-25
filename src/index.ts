@@ -1,8 +1,21 @@
-import OutputTypeEnum from './output-type-enum';
-import Capturer from './capturer';
+import { Capturer, OutputType, CapturerOutput, CaptureOptions } from './capturer';
 
-export const OutputType = new OutputTypeEnum();
-
-export function capture(outputType, htmlDocument, options) {
-	return (new Capturer()).capture(outputType, htmlDocument, options);
+declare global {
+    interface Window {
+        htmlScreenCaptureJs: {
+            capture: (outputType: OutputType, htmlDocument: HTMLDocument, options: CaptureOptions) => CapturerOutput;
+        };
+    }
 }
+
+export const capture = (
+    outputType: OutputType,
+    htmlDocument: HTMLDocument,
+    options: CaptureOptions,
+): CapturerOutput => {
+    return new Capturer().capture(outputType, htmlDocument, options);
+};
+
+window.htmlScreenCaptureJs = {
+    capture,
+};

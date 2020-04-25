@@ -1,37 +1,54 @@
-export default class Logger {
-	constructor() {
-		this._logLevelNames = ['debug', 'info', 'warn', 'error', 'fatal', 'off'];
-		this.init();
-	}
-	init() {
-		this._logLevel = this._logLevelNames.indexOf('warn');
-	}
-	setLogLevel(levelName) {
-		if (levelName && (this._logLevelNames.indexOf(levelName.toLowerCase()) !== -1)) {
-			this._logLevel = this._logLevelNames.indexOf(levelName.toLowerCase());
-		}
-	}
-	_log(msg, levelName) {
-		if (this._logLevel <= this._logLevelNames.indexOf(levelName)) {
-			console.log('|html-screen-capture-js|' + levelName + '| ' + msg);
-		}
-	}
-	isDebug() {
-		return this._logLevel === this._logLevelNames.indexOf('debug');
-	}
-	debug(msg) {
-		this._log(msg, 'debug');
-	};
-	info(msg) {
-		this._log(msg, 'info');
-	};
-	warn(msg) {
-		this._log(msg, 'warn');
-	};
-	error(msg) {
-		this._log(msg, 'error');
-	};
-	fatal(msg) {
-		this._log(msg, 'fatal');
-	};
+export enum LogLevels {
+    DEBUG = 'debug',
+    INFO = 'info',
+    WARN = 'warn',
+    ERROR = 'error',
+    FATAL = 'fatal',
+    OFF = 'off',
 }
+
+let selectedLogLevel: LogLevels = LogLevels.WARN;
+
+const setLogLevel = (levelName: LogLevels = LogLevels.WARN): void => {
+    selectedLogLevel = levelName;
+};
+
+const getLogLevel = (): LogLevels => {
+    return selectedLogLevel;
+};
+
+const log = (msg: string, levelName: LogLevels = selectedLogLevel): void => {
+    console.log('|html-screen-capture-js|' + levelName + '| ' + msg);
+};
+
+const isDebug = (): boolean => {
+    return selectedLogLevel === LogLevels.DEBUG;
+};
+
+const debug = (msg: string): void => {
+    log(msg, LogLevels.DEBUG);
+};
+const info = (msg: string): void => {
+    log(msg, LogLevels.INFO);
+};
+
+const warn = (msg: string): void => {
+    log(msg, LogLevels.WARN);
+};
+const error = (msg: string): void => {
+    log(msg, LogLevels.ERROR);
+};
+const fatal = (msg: string): void => {
+    log(msg, LogLevels.FATAL);
+};
+
+export const logger = {
+    isDebug,
+    setLogLevel,
+    getLogLevel,
+    debug,
+    info,
+    warn,
+    error,
+    fatal,
+};
