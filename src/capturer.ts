@@ -41,114 +41,113 @@ const defaultOptions = {
     logLevel: LogLevels.WARN,
 };
 
+interface CapturerContext {
+    isBody: boolean;
+    classMap: Map<string, string>;
+    classCount: number;
+    pseudoStyles: Array<string>;
+    pseudoClassCount: number;
+    shouldHandleImgDataUrl: boolean;
+    canvas: HTMLCanvasElement | null;
+    doc: HTMLDocument;
+    options: CaptureOptions;
+}
+
 export class Capturer {
-    isBody = false;
-    classMap: Map<string, string> = new Map<string, string>();
-    classCount = 0;
-    pseudoStyles: Array<string> = [];
-    pseudoClassCount = 0;
-    shouldHandleImgDataUrl = true;
-    canvas: HTMLCanvasElement | null = null;
-    ctx: CanvasRenderingContext2D | null = null;
-    doc: HTMLDocument = window.document;
-    options: CaptureOptions = defaultOptions;
+    context: CapturerContext = {
+        isBody: false,
+        classMap: new Map<string, string>(),
+        classCount: 0,
+        pseudoStyles: [],
+        pseudoClassCount: 0,
+        shouldHandleImgDataUrl: true,
+        canvas: null,
+        doc: window.document,
+        options: defaultOptions,
+    };
 
-    getCanvasDataUrl(canvasElm: HTMLCanvasElement): string {
-        let canvasDataUrl = '';
+    capture(outputType: OutputType, htmlDocument: HTMLDocument, options: CaptureOptions): CapturerOutput {
+        const startTime = new Date().getTime();
+        let output = null;
+        const context = this.context;
         try {
-            canvasDataUrl = canvasElm.toDataURL(
-                this.options.imageFormatForDataUrl,
-                this.options.imageQualityForDataUrl,
-            );
+            context.options = { ...defaultOptions, ...options };
+            context.doc = htmlDocument || document;
+            logger.setLogLevel(context.options.logLevel);
+            logger.info(`capture() outputType: ${outputType} - start`);
+            const newHtmlObject = Capturer.getHtmlObject(context);
+            output = Capturer.prepareOutput(newHtmlObject, outputType);
         } catch (ex) {
-            logger.warn(`getCanvasDataUrl() - ${ex.message}`);
+            logger.error(`capture() - error - ${ex.message}`);
+        } finally {
+            logger.info(`capture() - end - ${new Date().getTime() - startTime}ms`);
         }
-        return canvasDataUrl;
+        return output;
     }
-    getImgDataUrl(imgElm: HTMLImageElement): string {
-        let imgDataUrl = '';
-        try {
-            if (!this.canvas) {
-                this.canvas = this.doc.createElement('canvas');
-                this.ctx = this.canvas.getContext('2d');
+
+    private static getHtmlObject(context: CapturerContext): HTMLElement {
+        const createNewHtml = (): HTMLElement => {
+            const newHtml = context.doc.documentElement.cloneNode(false) as HTMLElement;
+            Capturer.handleElmCss(context, context.doc.documentElement, newHtml);
+            return newHtml;
+        };
+        const appendNewHead = (newHtml: HTMLElement): void => {
+            const newHead = context.doc.head.cloneNode(true) as HTMLElement;
+            context.isBody = false;
+            Capturer.recursiveWalk(context, context.doc.head, newHead, false);
+            newHtml.appendChild(newHead);
+        };
+        const appendNewBody = (newHtml: HTMLElement): void => {
+            const newBody = context.doc.body.cloneNode(true) as HTMLElement;
+            context.isBody = true;
+            Capturer.recursiveWalk(context, context.doc.body, newBody, true);
+            newHtml.appendChild(newBody);
+        };
+        const appendNewStyle = (newHtml: Element): void => {
+            const style = context.doc.createElement('style');
+            let cssText = context.options.rulesToAddToDocStyle.join('');
+            context.classMap.forEach((v, k) => {
+                cssText += `.${v}{${k}}`;
+            });
+            cssText += cssText += context.pseudoStyles.join('');
+            style.appendChild(context.doc.createTextNode(cssText));
+            newHtml.children[0].appendChild(style);
+        };
+        const newHtml = createNewHtml();
+        appendNewHead(newHtml);
+        appendNewBody(newHtml);
+        appendNewStyle(newHtml);
+        return newHtml;
+    }
+
+    private static recursiveWalk(context: CapturerContext, domElm: Element, newElm: Element, handleCss: boolean): void {
+        if (context.isBody) {
+            if (domElm instanceof HTMLInputElement) {
+                Capturer.handleInputElement(domElm, newElm);
+            } else if (domElm instanceof HTMLImageElement) {
+                Capturer.handleImageElement(context, domElm, newElm);
+            } else if (domElm instanceof HTMLCanvasElement) {
+                Capturer.handleCanvasElement(context, domElm, newElm);
             }
-            this.canvas.width = imgElm.clientWidth;
-            this.canvas.height = imgElm.clientHeight;
-            this.ctx && this.ctx.drawImage(imgElm, 0, 0);
-            imgDataUrl = this.getCanvasDataUrl(this.canvas);
-        } catch (ex) {
-            logger.warn(`getImgDataUrl() - ${ex.message}`);
-            this.shouldHandleImgDataUrl = false;
         }
-        return imgDataUrl;
-    }
-
-    private static getClasses(domElm: Element): string[] {
-        const className = Capturer.getClassName(domElm);
-        const classNames = className ? className.split(' ') : [];
-        return classNames.reduce((result: string[], c: string) => {
-            if (c) {
-                result.push(c);
+        if (handleCss) {
+            Capturer.handleElmCss(context, domElm, newElm);
+            if (context.options.tagsOfSkippedElementsForChildTreeCssHandling.includes(domElm.tagName.toLowerCase())) {
+                handleCss = false;
             }
-            return result;
-        }, [] as string[]);
-    }
-
-    private static getClassName(domElm: Element): string {
-        const className = domElm instanceof SVGAnimateElement ? domElm.className.baseVal : domElm.className;
-        return className || '';
-    }
-
-    private handleElmCss(domElm: Element, newElm: Element): void {
-        if (Capturer.getClasses(newElm).length > 0) {
-            newElm.setAttribute(this.options.attrKeyForSavingElementOrigClass, Capturer.getClassName(newElm));
-            newElm.removeAttribute('class');
         }
-        if (newElm.getAttribute('style')) {
-            newElm.setAttribute(this.options.attrKeyForSavingElementOrigStyle, newElm.getAttribute('style') || '');
-            newElm.removeAttribute('style');
-        }
-        const computedStyle = getComputedStyle(domElm);
-        let classStr = '';
-
-        for (let i = 0; i < computedStyle.length; i++) {
-            const property = computedStyle.item(i);
-            const value = computedStyle.getPropertyValue(property);
-            const mapKey = property + ':' + value;
-            let className: string = this.classMap.get(mapKey) || '';
-            if (!className) {
-                this.classCount++;
-                className = `${this.options.prefixForNewGeneratedClasses}${this.classCount}`;
-                this.classMap.set(mapKey, className);
-            }
-            classStr += className + ' ';
-        }
-
-        for (const pseudoType of ['::before', '::after']) {
-            const computedStyle = getComputedStyle(domElm, pseudoType);
-            if (!['none', 'normal'].includes(computedStyle.content)) {
-                this.pseudoClassCount++;
-                const className = `${this.options.prefixForNewGeneratedPseudoClasses}${this.pseudoClassCount}`;
-                classStr += className + ' ';
-                this.pseudoStyles.push(`.${className}${pseudoType}{`);
-                for (let i = 0; i < computedStyle.length; i++) {
-                    const property = computedStyle.item(i);
-                    const value = computedStyle.getPropertyValue(property);
-                    this.pseudoStyles.push(`${property}:${value};`);
+        if (domElm.children) {
+            for (let i = domElm.children.length - 1; i >= 0; i--) {
+                if (Capturer.shouldIgnoreElm(context, domElm.children[i])) {
+                    newElm.removeChild(newElm.children[i]);
+                } else {
+                    Capturer.recursiveWalk(context, domElm.children[i], newElm.children[i], handleCss);
                 }
-                this.pseudoStyles.push('}');
             }
-        }
-
-        if (classStr) {
-            newElm.setAttribute('class', classStr.trim());
         }
     }
 
-    private static handleInputs(domElm: Element, newElm: Element): void {
-        if (!(domElm instanceof HTMLInputElement)) {
-            return;
-        }
+    private static handleInputElement(domElm: HTMLInputElement, newElm: Element): void {
         const domType = domElm.getAttribute('type');
         if (domElm instanceof HTMLInputElement && domType === 'text' && domElm.value) {
             newElm.setAttribute('value', domElm.value);
@@ -174,110 +173,142 @@ export class Capturer {
         }
     }
 
-    private appendNewStyle(newHtml: Element): void {
-        const style = this.doc.createElement('style');
-        let cssText = this.options.rulesToAddToDocStyle.join('');
-        this.classMap.forEach((v, k) => {
-            cssText += `.${v}{${k}}`;
-        });
-        cssText += cssText += this.pseudoStyles.join('');
-        style.appendChild(this.doc.createTextNode(cssText));
-        newHtml.children[0].appendChild(style);
-    }
-
-    private shouldIgnoreElm(domElm: Element): boolean {
-        let shouldIgnoreElm = false;
-        if (
-            (!this.isBody && this.options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())) ||
-            (this.isBody && this.options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase()))
-        ) {
-            shouldIgnoreElm = true;
-        }
-        if (!shouldIgnoreElm) {
-            for (let i = 0; i < domElm.attributes.length; i++) {
-                if (domElm.attributes[i].specified) {
-                    for (const [k, v] of Object.entries(this.options.attrKeyValuePairsOfIgnoredElements)) {
-                        if (k === domElm.attributes[i].name && v === domElm.attributes[i].value) {
-                            shouldIgnoreElm = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        if (!shouldIgnoreElm && this.isBody) {
-            const domElmClasses = Capturer.getClasses(domElm);
-            domElmClasses.forEach((c: string) => {
-                if (this.options.classesOfIgnoredDocBodyElements.includes(c)) {
-                    shouldIgnoreElm = true;
-                }
-            });
-        }
-        return shouldIgnoreElm;
-    }
-
-    private recursiveWalk(domElm: Element, newElm: Element, handleCss: boolean): void {
-        if (this.shouldHandleImgDataUrl && this.isBody && domElm instanceof HTMLImageElement) {
-            const imgDataUrl = this.getImgDataUrl(domElm);
+    private static handleImageElement = (context: CapturerContext, domElm: HTMLImageElement, newElm: Element) => {
+        if (context.shouldHandleImgDataUrl) {
+            const imgDataUrl = Capturer.getCanvasDataUrl(context, domElm);
             if (imgDataUrl) {
                 newElm.setAttribute('src', imgDataUrl);
             }
         }
-        if (this.isBody && domElm instanceof HTMLCanvasElement) {
-            const canvasDataUrl = this.getCanvasDataUrl(domElm);
-            if (canvasDataUrl) {
-                newElm.setAttribute('src', canvasDataUrl);
-            }
-            newElm.outerHTML = newElm.outerHTML.replace(/<canvas/g, '<img');
-        }
-        if (this.isBody) {
-            Capturer.handleInputs(domElm, newElm);
-        }
-        if (handleCss) {
-            this.handleElmCss(domElm, newElm);
-            if (this.options.tagsOfSkippedElementsForChildTreeCssHandling.includes(domElm.tagName.toLowerCase())) {
-                handleCss = false;
-            }
-        }
-        if (domElm.children) {
-            for (let i = domElm.children.length - 1; i >= 0; i--) {
-                const child = domElm.children[i];
+    };
 
-                if (this.shouldIgnoreElm(child)) {
-                    newElm.removeChild(newElm.children[i]);
-                } else {
-                    this.recursiveWalk(domElm.children[i], newElm.children[i], handleCss);
+    private static handleCanvasElement = (context: CapturerContext, domElm: HTMLCanvasElement, newElm: Element) => {
+        const canvasDataUrl = Capturer.getCanvasDataUrl(context, domElm);
+        if (canvasDataUrl) {
+            newElm.setAttribute('src', canvasDataUrl);
+        }
+        newElm.outerHTML = newElm.outerHTML.replace(/<canvas/g, '<img');
+    };
+
+    private static getCanvasDataUrl(context: CapturerContext, domElm: HTMLImageElement | HTMLCanvasElement): string {
+        let canvasDataUrl = '';
+        try {
+            if (!context.canvas) {
+                context.canvas = context.doc.createElement('canvas');
+            }
+            context.canvas.width = domElm.clientWidth;
+            context.canvas.height = domElm.clientHeight;
+            const ctx = context.canvas.getContext('2d');
+            if (ctx) {
+                ctx.drawImage(domElm, 0, 0);
+            }
+            canvasDataUrl = context.canvas.toDataURL(
+                context.options.imageFormatForDataUrl,
+                context.options.imageQualityForDataUrl,
+            );
+        } catch (ex) {
+            logger.warn(`getCanvasDataUrl() - ${ex.message}`);
+        }
+        return canvasDataUrl;
+    }
+
+    private static handleElmCss(context: CapturerContext, domElm: Element, newElm: Element): void {
+        const handleOrigClassAndStyle = () => {
+            if (Capturer.getClasses(newElm).length > 0) {
+                newElm.setAttribute(context.options.attrKeyForSavingElementOrigClass, Capturer.getClassName(newElm));
+                newElm.removeAttribute('class');
+            }
+            if (newElm.getAttribute('style')) {
+                newElm.setAttribute(
+                    context.options.attrKeyForSavingElementOrigStyle,
+                    newElm.getAttribute('style') || '',
+                );
+                newElm.removeAttribute('style');
+            }
+        };
+        const handleRegularElmStyle = () => {
+            let classStr = '';
+            const computedStyle = getComputedStyle(domElm);
+            for (let i = 0; i < computedStyle.length; i++) {
+                const property = computedStyle.item(i);
+                const value = computedStyle.getPropertyValue(property);
+                const mapKey = property + ':' + value;
+                let className: string = context.classMap.get(mapKey) || '';
+                if (!className) {
+                    context.classCount++;
+                    className = `${context.options.prefixForNewGeneratedClasses}${context.classCount}`;
+                    context.classMap.set(mapKey, className);
+                }
+                classStr += className + ' ';
+            }
+            return classStr;
+        };
+        const handlePseudoElmsStyle = () => {
+            let classStr = '';
+            for (const pseudoType of ['::before', '::after']) {
+                const computedStyle = getComputedStyle(domElm, pseudoType);
+                if (!['none', 'normal'].includes(computedStyle.content)) {
+                    context.pseudoClassCount++;
+                    const className = `${context.options.prefixForNewGeneratedPseudoClasses}${context.pseudoClassCount}`;
+                    classStr += className + ' ';
+                    context.pseudoStyles.push(`.${className}${pseudoType}{`);
+                    for (let i = 0; i < computedStyle.length; i++) {
+                        const property = computedStyle.item(i);
+                        const value = computedStyle.getPropertyValue(property);
+                        context.pseudoStyles.push(`${property}:${value};`);
+                    }
+                    context.pseudoStyles.push('}');
+                }
+            }
+            return classStr;
+        };
+        handleOrigClassAndStyle();
+        let classStr = handleRegularElmStyle();
+        classStr += handlePseudoElmsStyle();
+        newElm.setAttribute('class', classStr.trim());
+    }
+
+    private static getClasses(domElm: Element): string[] {
+        const className = Capturer.getClassName(domElm);
+        const classNames = className ? className.split(' ') : [];
+        return classNames.reduce((result: string[], c: string) => {
+            if (c) {
+                result.push(c);
+            }
+            return result;
+        }, [] as string[]);
+    }
+
+    private static getClassName(domElm: Element): string {
+        const className = domElm instanceof SVGAnimateElement ? domElm.className.baseVal : domElm.className;
+        return className || '';
+    }
+
+    private static shouldIgnoreElm(context: CapturerContext, domElm: Element): boolean {
+        if (
+            (!context.isBody && context.options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())) ||
+            (context.isBody && context.options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase()))
+        ) {
+            return true;
+        }
+        for (let i = 0; i < domElm.attributes.length; i++) {
+            if (domElm.attributes[i].specified) {
+                for (const [k, v] of Object.entries(context.options.attrKeyValuePairsOfIgnoredElements)) {
+                    if (k === domElm.attributes[i].name && v === domElm.attributes[i].value) {
+                        return true;
+                    }
                 }
             }
         }
-    }
-
-    private createNewHtml(): HTMLElement {
-        const newHtml = this.doc.documentElement.cloneNode(false) as HTMLElement;
-        this.handleElmCss(this.doc.documentElement, newHtml);
-        return newHtml;
-    }
-
-    private appendNewHead(newHtml: HTMLElement): void {
-        const newHead = this.doc.head.cloneNode(true) as HTMLElement;
-        this.isBody = false;
-        this.recursiveWalk(this.doc.head, newHead, false);
-        newHtml.appendChild(newHead);
-    }
-
-    private appendNewBody(newHtml: HTMLElement): void {
-        const newBody = this.doc.body.cloneNode(true) as HTMLElement;
-        this.isBody = true;
-        this.recursiveWalk(this.doc.body, newBody, true);
-        newHtml.appendChild(newBody);
-    }
-
-    private getHtmlObject(): HTMLElement {
-        const newHtml = this.createNewHtml();
-        this.appendNewHead(newHtml);
-        this.appendNewBody(newHtml);
-        this.appendNewStyle(newHtml);
-        return newHtml;
+        if (context.isBody) {
+            const domElmClasses = Capturer.getClasses(domElm);
+            domElmClasses.forEach((c: string) => {
+                if (context.options.classesOfIgnoredDocBodyElements.includes(c)) {
+                    return true;
+                }
+            });
+        }
+        return false;
     }
 
     private static prepareOutput(newHtmlObject: HTMLElement, outputType = OutputType.OBJECT): string | HTMLElement {
@@ -299,24 +330,6 @@ export class Capturer {
         }
         if (logger.isDebug()) {
             logger.debug(`output: ${output instanceof HTMLElement ? output.outerHTML : output}`);
-        }
-        return output;
-    }
-
-    capture(outputType: OutputType, htmlDocument: HTMLDocument, options: CaptureOptions): CapturerOutput {
-        let output = null;
-        const startTime = new Date().getTime();
-        try {
-            this.options = { ...defaultOptions, ...options };
-            this.doc = htmlDocument || document;
-            logger.setLogLevel(this.options.logLevel);
-            logger.info(`capture() outputType: ${outputType} - start`);
-            const newHtmlObject = this.getHtmlObject();
-            output = Capturer.prepareOutput(newHtmlObject, outputType);
-        } catch (ex) {
-            logger.error(`capture() - error - ${ex.message}`);
-        } finally {
-            logger.info(`capture() - end - ${new Date().getTime() - startTime}ms`);
         }
         return output;
     }
