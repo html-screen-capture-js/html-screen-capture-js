@@ -1,4 +1,4 @@
-import { Capturer, OutputType, CapturerOutput, CaptureOptions } from './capturer';
+import { goCapture, OutputType, CapturerOutput, CaptureOptions } from './capturer';
 
 declare global {
     interface Window {
@@ -13,7 +13,7 @@ export const capture = (
     htmlDocument: HTMLDocument,
     options: CaptureOptions,
 ): CapturerOutput => {
-    return new Capturer().capture(outputType, htmlDocument, options);
+    return goCapture(outputType, htmlDocument, options);
 };
 
 window.htmlScreenCaptureJs = {
