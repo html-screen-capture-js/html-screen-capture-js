@@ -70,8 +70,8 @@ interface CapturerContext {
 }
 
 const getClassName = (domElm: Element): string => {
-    const className = domElm instanceof SVGAnimateElement ? domElm.className.baseVal : domElm.className;
-    return className || '';
+    const className: any = domElm.className;
+    return (className instanceof SVGAnimatedString ? className.baseVal : className) || '';
 };
 
 const getClasses = (domElm: Element): string[] => {
