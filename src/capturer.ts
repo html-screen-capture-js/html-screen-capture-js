@@ -144,8 +144,8 @@ const getCanvasDataUrl = (context: CapturerContext, domElm: HTMLImageElement | H
         if (!context.canvas) {
             context.canvas = context.doc.createElement('canvas');
         }
-        context.canvas.width = domElm.clientWidth;
-        context.canvas.height = domElm.clientHeight;
+        context.canvas.width = domElm instanceof HTMLImageElement ? domElm.naturalWidth : domElm.offsetWidth;
+        context.canvas.height = domElm instanceof HTMLImageElement ? domElm.naturalHeight : domElm.offsetHeight;
         const ctx = context.canvas.getContext('2d');
         if (ctx) {
             ctx.drawImage(domElm, 0, 0);
