@@ -9,7 +9,9 @@
         "capture",
         "image",
         "js",
-        "javascript"
+        "javascript",
+        "ts",
+        "typescript"
     ],
     "license": "MIT",
     "author": "Uri Kalish <uri.kalish@gmail.com>",
