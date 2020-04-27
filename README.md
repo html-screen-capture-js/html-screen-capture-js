@@ -4,7 +4,7 @@
 [![NPM version](https://img.shields.io/npm/v/html-screen-capture-js.svg)](https://www.npmjs.com/package/html-screen-capture-js)
 [![Github Release](https://img.shields.io/github/release/html-screen-capture-js/html-screen-capture-js/all.svg)](https://github.com/html-screen-capture-js/html-screen-capture-js/releases)
 
-A tiny 10KB highly-customizable single-function javascript/typescript library that gets a webpage, and returns a new lightweight self-contained HTML document. The library removes all external file dependencies while preserving the original appearance.
+A tiny, highly-customizable, single-function javascript/typescript library that captures a webpage and returns a new lightweight, self-contained HTML document. The library removes all external file dependencies while preserving the original appearance of the page. At only 12KB, it offers unparalleled speed and peerless reliability.
 
 This library can be used to:
 
@@ -12,6 +12,7 @@ This library can be used to:
 - Strip an html document from its external dependencies, as a step in a bigger process.
 - Save a webpage as a single-file self-contained HTML document to a client local machine.
 - Send a complete webpage content as a simple string to a remote server.
+- Take multiple snapshots of a visitor's actions on a page for compliance purposes (e.g. sign up consents and the like).
 
 License:
 
