@@ -198,7 +198,7 @@ const htmlDocStr = capture(
 	window.document,
 	{
 		rulesToAddToDocStyle: [
-			'*, *::before, *::after {letter-spacing: -0.3px !important;}',
+			'*,*::before,*::after{font-family:Arial,sans-serif !important;letter-spacing:-0.3px !important;}',
 		],
 		classesOfIgnoredDocBodyElements: [
 			'modal-dialog--error',
