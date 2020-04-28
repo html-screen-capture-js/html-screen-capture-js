@@ -13,8 +13,15 @@
         "ts",
         "typescript"
     ],
+    "homepage": "https://github.com/html-screen-capture-js/html-screen-capture-js",
+    "bugs": "https://github.com/html-screen-capture-js/html-screen-capture-js/issues",
     "license": "MIT",
-    "author": "Uri Kalish <uri.kalish@gmail.com>",
+    "author": "Uri Kalish <uri.kalish@gmail.com> (https://github.com/urikalish)",
+    "contributors": [
+        "Uri Kalish <uri.kalish@gmail.com> (https://github.com/urikalish)",
+        "Gal Malachi (https://github.com/gal1419)",
+        "alimovz (https://github.com/alimovz)"
+    ],
     "files": [
         "dist/**/*"
     ],
@@ -29,6 +36,16 @@
         "build": "rollup -c --environment BUILD:production",
         "dev": "rollup -c --environment BUILD:dev",
         "lint": "tsc --noEmit && lint-staged"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "tsc --noEmit && lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{js,ts}": [
+            "eslint --fix"
+        ]
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^2.29.0",
@@ -50,15 +67,5 @@
         "rollup-plugin-uglify": "^6.0.4",
         "typescript": "^3.8.3",
         "yargs": "^10.0.3"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "tsc --noEmit && lint-staged"
-        }
-    },
-    "lint-staged": {
-        "*.{js,ts}": [
-            "eslint --fix"
-        ]
     }
 }
