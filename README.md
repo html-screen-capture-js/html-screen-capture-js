@@ -4,6 +4,7 @@
 [![NPM downloads](https://img.shields.io/npm/dm/html-screen-capture-js?color=brightgreen)](https://www.npmjs.com/package/html-screen-capture-js)
 [![NPM version](https://img.shields.io/npm/v/html-screen-capture-js.svg)](https://www.npmjs.com/package/html-screen-capture-js)
 [![Github Release](https://img.shields.io/github/release/html-screen-capture-js/html-screen-capture-js/all.svg)](https://github.com/html-screen-capture-js/html-screen-capture-js/releases)
+https://img.shields.io/npm/types/html-screen-capture-js?color=brightgreen
 
 A tiny, highly-customizable, single-function javascript/typescript library that captures a webpage and returns a new lightweight, self-contained HTML document. The library removes all external file dependencies while preserving the original appearance of the page. At only 12KB, it offers unparalleled speed and peerless reliability.
 
