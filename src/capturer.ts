@@ -1,63 +1,8 @@
-import { logger, LogLevel } from './logger';
+import { LogLevel, OutputType, CaptureFunction } from './types';
+import { logger } from './logger';
 import { base64Encode, uriEncode } from './encoder';
 
-export enum OutputType {
-    OBJECT = 'object',
-    STRING = 'string',
-    URI = 'uri',
-    BASE64 = 'base64',
-}
-export interface CaptureOptions {
-    rulesToAddToDocStyle?: string[];
-    tagsOfIgnoredDocHeadElements?: string[];
-    tagsOfIgnoredDocBodyElements?: string[];
-    classesOfIgnoredDocBodyElements?: string[];
-    attrKeyValuePairsOfIgnoredElements?: {};
-    tagsOfSkippedElementsForChildTreeCssHandling?: string[];
-    attrKeyForSavingElementOrigClass?: string;
-    attrKeyForSavingElementOrigStyle?: string;
-    prefixForNewGeneratedClasses?: string;
-    prefixForNewGeneratedPseudoClasses?: string;
-    imageFormatForDataUrl?: string;
-    imageQualityForDataUrl?: number;
-    logLevel?: LogLevel;
-}
-
-interface Options {
-    rulesToAddToDocStyle: string[];
-    tagsOfIgnoredDocHeadElements: string[];
-    tagsOfIgnoredDocBodyElements: string[];
-    classesOfIgnoredDocBodyElements: string[];
-    attrKeyValuePairsOfIgnoredElements: {};
-    tagsOfSkippedElementsForChildTreeCssHandling: string[];
-    attrKeyForSavingElementOrigClass: string;
-    attrKeyForSavingElementOrigStyle: string;
-    prefixForNewGeneratedClasses: string;
-    prefixForNewGeneratedPseudoClasses: string;
-    imageFormatForDataUrl: string;
-    imageQualityForDataUrl: number;
-    logLevel: LogLevel;
-}
-
-export type CapturerOutput = string | HTMLElement | null;
-
-const defaultOptions = {
-    rulesToAddToDocStyle: [],
-    tagsOfIgnoredDocHeadElements: ['script', 'link', 'style'],
-    tagsOfIgnoredDocBodyElements: ['script'],
-    classesOfIgnoredDocBodyElements: [],
-    attrKeyValuePairsOfIgnoredElements: {},
-    tagsOfSkippedElementsForChildTreeCssHandling: ['svg'],
-    attrKeyForSavingElementOrigClass: '_class',
-    attrKeyForSavingElementOrigStyle: '_style',
-    prefixForNewGeneratedClasses: 'c',
-    prefixForNewGeneratedPseudoClasses: 'p',
-    imageFormatForDataUrl: 'image/png',
-    imageQualityForDataUrl: 0.92,
-    logLevel: LogLevel.WARN,
-};
-
-interface CapturerContext {
+interface CaptureContext {
     isBody: boolean;
     classMap: Map<string, string>;
     classCount: number;
@@ -66,7 +11,21 @@ interface CapturerContext {
     shouldHandleImgDataUrl: boolean;
     canvas: HTMLCanvasElement | null;
     doc: HTMLDocument;
-    options: Options;
+    options: {
+        rulesToAddToDocStyle: string[];
+        tagsOfIgnoredDocHeadElements: string[];
+        tagsOfIgnoredDocBodyElements: string[];
+        classesOfIgnoredDocBodyElements: string[];
+        attrKeyValuePairsOfIgnoredElements: {};
+        tagsOfSkippedElementsForChildTreeCssHandling: string[];
+        attrKeyForSavingElementOrigClass: string;
+        attrKeyForSavingElementOrigStyle: string;
+        prefixForNewGeneratedClasses: string;
+        prefixForNewGeneratedPseudoClasses: string;
+        imageFormatForDataUrl: string;
+        imageQualityForDataUrl: number;
+        logLevel: LogLevel;
+    };
 }
 
 const getClassName = (domElm: Element): string => {
@@ -85,7 +44,7 @@ const getClasses = (domElm: Element): string[] => {
     }, [] as string[]);
 };
 
-const handleElmCss = (context: CapturerContext, domElm: Element, newElm: Element): void => {
+const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element): void => {
     const handleOrigClassAndStyle = (): void => {
         if (getClasses(newElm).length > 0) {
             newElm.setAttribute(context.options.attrKeyForSavingElementOrigClass, getClassName(newElm));
@@ -138,7 +97,7 @@ const handleElmCss = (context: CapturerContext, domElm: Element, newElm: Element
     newElm.setAttribute('class', classStr.trim());
 };
 
-const getCanvasDataUrl = (context: CapturerContext, domElm: HTMLImageElement | HTMLCanvasElement): string => {
+const getCanvasDataUrl = (context: CaptureContext, domElm: HTMLImageElement | HTMLCanvasElement): string => {
     let canvasDataUrl = '';
     try {
         if (!context.canvas) {
@@ -186,7 +145,7 @@ const handleInputElement = (domElm: HTMLInputElement, newElm: Element): void => 
     }
 };
 
-const handleImageElement = (context: CapturerContext, domElm: HTMLImageElement, newElm: Element): void => {
+const handleImageElement = (context: CaptureContext, domElm: HTMLImageElement, newElm: Element): void => {
     if (context.shouldHandleImgDataUrl) {
         const imgDataUrl = getCanvasDataUrl(context, domElm);
         if (imgDataUrl) {
@@ -195,7 +154,7 @@ const handleImageElement = (context: CapturerContext, domElm: HTMLImageElement, 
     }
 };
 
-const handleCanvasElement = (context: CapturerContext, domElm: HTMLCanvasElement, newElm: Element): void => {
+const handleCanvasElement = (context: CaptureContext, domElm: HTMLCanvasElement, newElm: Element): void => {
     const canvasDataUrl = getCanvasDataUrl(context, domElm);
     if (canvasDataUrl) {
         newElm.setAttribute('src', canvasDataUrl);
@@ -203,7 +162,7 @@ const handleCanvasElement = (context: CapturerContext, domElm: HTMLCanvasElement
     newElm.outerHTML = newElm.outerHTML.replace(/<canvas/g, '<img');
 };
 
-const shouldIgnoreElm = (context: CapturerContext, domElm: Element): boolean => {
+const shouldIgnoreElm = (context: CaptureContext, domElm: Element): boolean => {
     let shouldIgnore = false;
     if (
         (!context.isBody && context.options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())) ||
@@ -235,7 +194,7 @@ const shouldIgnoreElm = (context: CapturerContext, domElm: Element): boolean => 
     return shouldIgnore;
 };
 
-const recursiveWalk = (context: CapturerContext, domElm: Element, newElm: Element, handleCss: boolean): void => {
+const recursiveWalk = (context: CaptureContext, domElm: Element, newElm: Element, handleCss: boolean): void => {
     if (context.isBody) {
         if (domElm instanceof HTMLInputElement) {
             handleInputElement(domElm, newElm);
@@ -262,7 +221,7 @@ const recursiveWalk = (context: CapturerContext, domElm: Element, newElm: Elemen
     }
 };
 
-const getHtmlObject = (context: CapturerContext): HTMLElement => {
+const getHtmlObject = (context: CaptureContext): HTMLElement => {
     const createNewHtml = (): HTMLElement => {
         const newHtml = context.doc.documentElement.cloneNode(false) as HTMLElement;
         handleElmCss(context, context.doc.documentElement, newHtml);
@@ -320,14 +279,10 @@ const prepareOutput = (newHtmlObject: HTMLElement, outputType = OutputType.OBJEC
     return output;
 };
 
-export const goCapture = (
-    outputType: OutputType,
-    htmlDocument: HTMLDocument,
-    options: CaptureOptions,
-): CapturerOutput => {
+export const goCapture: CaptureFunction = (outputType, htmlDocument, options) => {
     const startTime = new Date().getTime();
     let output = null;
-    const context: CapturerContext = {
+    const context: CaptureContext = {
         isBody: false,
         classMap: new Map<string, string>(),
         classCount: 0,
@@ -335,12 +290,27 @@ export const goCapture = (
         pseudoClassCount: 0,
         shouldHandleImgDataUrl: true,
         canvas: null,
-        doc: window.document,
-        options: defaultOptions,
+        doc: htmlDocument || document,
+        options: {
+            ...{
+                rulesToAddToDocStyle: [],
+                tagsOfIgnoredDocHeadElements: ['script', 'link', 'style'],
+                tagsOfIgnoredDocBodyElements: ['script'],
+                classesOfIgnoredDocBodyElements: [],
+                attrKeyValuePairsOfIgnoredElements: {},
+                tagsOfSkippedElementsForChildTreeCssHandling: ['svg'],
+                attrKeyForSavingElementOrigClass: '_class',
+                attrKeyForSavingElementOrigStyle: '_style',
+                prefixForNewGeneratedClasses: 'c',
+                prefixForNewGeneratedPseudoClasses: 'p',
+                imageFormatForDataUrl: 'image/png',
+                imageQualityForDataUrl: 0.92,
+                logLevel: LogLevel.WARN,
+            },
+            ...options,
+        },
     };
     try {
-        context.options = { ...defaultOptions, ...options };
-        context.doc = htmlDocument || document;
         logger.setLogLevel(context.options.logLevel);
         logger.info(`goCapture() outputType: ${outputType} - start`);
         const newHtmlObject = getHtmlObject(context);

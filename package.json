@@ -23,11 +23,14 @@
         "alimovz (https://github.com/alimovz)"
     ],
     "files": [
-        "dist/**/*"
+        "dist/html-screen-capture.*.js",
+        "dist/html-screen-capture.*.js.map",
+        "dist/types.d.ts",
+        "dist/index.d.ts"
     ],
     "main": "dist/html-screen-capture.min.js",
     "module": "dist/html-screen-capture.esm.js",
-    "types": "dist/index.d.ts",
+    "types": "./src/types.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/html-screen-capture-js/html-screen-capture-js"

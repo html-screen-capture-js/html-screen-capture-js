@@ -1,11 +1,7 @@
-import { goCapture, OutputType, CapturerOutput, CaptureOptions } from './capturer';
+import { OutputType, LogLevel, Options, CaptureOutput, CaptureFunction } from './types';
+import { goCapture } from './capturer';
 
-export { CaptureOptions, OutputType } from './capturer';
-export { LogLevel } from './logger';
-export const capture = (
-    outputType: OutputType,
-    htmlDocument: HTMLDocument,
-    options: CaptureOptions,
-): CapturerOutput => {
+export { OutputType, LogLevel, Options, CaptureOutput, CaptureFunction } from './types';
+export const capture: CaptureFunction = (outputType, htmlDocument, options) => {
     return goCapture(outputType, htmlDocument, options);
 };

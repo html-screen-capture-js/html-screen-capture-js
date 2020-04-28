@@ -1,11 +1,4 @@
-export enum LogLevel {
-    DEBUG = 'debug',
-    INFO = 'info',
-    WARN = 'warn',
-    ERROR = 'error',
-    FATAL = 'fatal',
-    OFF = 'off',
-}
+import { LogLevel } from './types';
 
 let selectedLogLevel: LogLevel = LogLevel.WARN;
 
