@@ -1,7 +1,7 @@
 # html-screen-capture-js
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
-[![NPM downloads](https://img.shields.io/npm/dw/html-screen-capture-js?color=green&style=plastic)](https://www.npmjs.com/package/html-screen-capture-js)
+[![NPM downloads](https://img.shields.io/npm/dw/html-screen-capture-js?color=green)](https://www.npmjs.com/package/html-screen-capture-js)
 [![NPM version](https://img.shields.io/npm/v/html-screen-capture-js.svg)](https://www.npmjs.com/package/html-screen-capture-js)
 [![Github Release](https://img.shields.io/github/release/html-screen-capture-js/html-screen-capture-js/all.svg)](https://github.com/html-screen-capture-js/html-screen-capture-js/releases)
 
