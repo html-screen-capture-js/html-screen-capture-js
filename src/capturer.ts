@@ -119,20 +119,21 @@ const getCanvasDataUrl = (context: CaptureContext, domElm: HTMLImageElement | HT
     return canvasDataUrl;
 };
 
-const handleInputElement = (domElm: HTMLInputElement, newElm: Element): void => {
+const handleInputElement = (
+    domElm: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+    newElm: Element,
+): void => {
+    newElm.setAttribute('value', domElm.value);
     const domType = domElm.getAttribute('type');
-    if (domElm instanceof HTMLInputElement && domType === 'text' && domElm.value) {
-        newElm.setAttribute('value', domElm.value);
-    } else if (domElm instanceof HTMLTextAreaElement && domElm.value) {
-        (newElm as HTMLInputElement).innerText = domElm.value;
-    } else if (domElm instanceof HTMLInputElement && (domType === 'checkbox' || domType === 'radio')) {
+    if (domElm instanceof HTMLInputElement && (domType === 'checkbox' || domType === 'radio')) {
         if (domElm.checked) {
             (newElm as HTMLInputElement).setAttribute('checked', 'checked');
         } else {
             newElm.removeAttribute('checked');
         }
+    } else if (domElm instanceof HTMLTextAreaElement && domElm.value) {
+        (newElm as HTMLInputElement).innerText = domElm.value;
     } else if (domElm instanceof HTMLSelectElement && domElm.value && domElm.children) {
-        newElm.setAttribute('value', domElm.value);
         for (let i = domElm.children.length - 1; i >= 0; i--) {
             if (domElm.children[i].getAttribute('value') === domElm.value) {
                 newElm.children[i].setAttribute('selected', '');
@@ -140,8 +141,6 @@ const handleInputElement = (domElm: HTMLInputElement, newElm: Element): void => 
                 newElm.children[i].removeAttribute('selected');
             }
         }
-    } else if (domElm.value) {
-        newElm.setAttribute('value', domElm.value);
     }
 };
 
@@ -196,7 +195,11 @@ const shouldIgnoreElm = (context: CaptureContext, domElm: Element): boolean => {
 
 const recursiveWalk = (context: CaptureContext, domElm: Element, newElm: Element, handleCss: boolean): void => {
     if (context.isBody) {
-        if (domElm instanceof HTMLInputElement) {
+        if (
+            domElm instanceof HTMLInputElement ||
+            domElm instanceof HTMLTextAreaElement ||
+            domElm instanceof HTMLSelectElement
+        ) {
             handleInputElement(domElm, newElm);
         } else if (domElm instanceof HTMLImageElement) {
             handleImageElement(context, domElm, newElm);
