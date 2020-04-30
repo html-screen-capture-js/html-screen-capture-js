@@ -34,11 +34,13 @@ It will install all the required npm dependencies, build the library, and open t
 <a name="technicalOverview"></a>
 ## Technical Overview
 
-The code gets an HTML document as a parameter, and returns a new lightweight self-contained HTML document object that preserves the original appearance.
-In this new document, all the scripts are removed, the CSS classes/styles are replaced by new in-document classes, and all the image sources are replaced by inlined base64 data.
-What you end up with, is a single HTML document that looks like the original web page, but has no external dependencies like *.js, *.css, *.png, etc. so it can easily be displayed, saved, or transferred.
-Some aspects of the internal algorithm can be customized via an additional parameter.
-The source code is written in ES6, and transpiled to ES5.
+The code gets an HTML document as a parameter, and returns a new lightweight, self-contained HTML
+document object that preserves the appearance of the original page. The newly generated document strips out all
+scripts; CSS classes/styles are replaced by new in-document classes; and all
+image sources are replaced by inlined base64-encoded versions. The result is a single HTML document
+that looks like the original web page, but has no external dependencies like *.js, *.css, *.png, etc.
+It can easily be displayed, saved, archived or transferred. Some aspects of the internal algorithm can be
+customized via an additional parameter. The source code is written in ES6, and transpiled to ES5.
 
 <a name="installation"></a>
 ## Installation
@@ -76,13 +78,15 @@ capture([outputType], [htmlDocument], [options]);
 #### outputType
 An optional enum-type parameter, specifying the desired output. If not specified (falsey) - output will be returned as an object.
 
-- A valid value is one of these: 'object' | 'string' | 'uri' | 'base64'
+- Valid values: 'object' | 'string' | 'uri' | 'base64'
 
 #### htmlDocument
 An optional object-type parameter, specifying the HTML document to capture. If not specified (falsey) - window.document is used.
 
 #### options
-An optional object-type parameter with key-value pairs. You can change any default option value by defining a similarly named property on this object. If not specified (falsey), or specified but defining only some of the properties - default values are used for all non-defined properties.
+An optional object-type parameter. You can change any default option value by defining a similarly
+named property within the object. If not specified (falsey), or specified but defining only some of
+the properties, default values are used for all non-defined properties.
 
 ##### rulesToAddToDocStyle 
 
@@ -154,22 +158,23 @@ An optional object-type parameter with key-value pairs. You can change any defau
 
 - Type: Number
 - Default: 0.92
-- The image quality to use when images are replaced with base64 data - relevant only for some image formats. A valid value is any number between 0 and 1. 
+- The image quality to use when images are replaced with base64 data; relevant only for some image formats.
+  A valid value is any number between 0 and 1. 
 
 ##### logLevel
 
 - Type: String
 - Default: 'warn'
-- Log level. A valid value is one of these: 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'off' 
+- Valid values: 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'off' 
 
 ### Return Value
 
-The returned value is a new static lightweight HTML document in some format depending on the OutputType parameter supplied to the function.
-- If OutputType equals to htmlScreenCaptureJs.OutputType.OBJECT, the return value is an object.
-- If OutputType equals to htmlScreenCaptureJs.OutputType.STRING, the return value is a string.
-- If OutputType equals to htmlScreenCaptureJs.OutputType.URI, the return value is a URI-encoded string.
-- If OutputType equals to htmlScreenCaptureJs.OutputType.BASE64, the return value is a Base64-encoded string.  
-- If OutputType is not specified, the return value is an object. 
+The returned value is a static HTML document in the format specified by the OutputType
+parameter supplied to the function. Valid options are below:
+- "htmlScreenCaptureJs.OutputType.OBJECT"; the return value is an object. (Default)
+- "htmlScreenCaptureJs.OutputType.STRING"; the return value is a string.
+- "htmlScreenCaptureJs.OutputType.URI"; the return value is a URI-encoded string.
+- "htmlScreenCaptureJs.OutputType.BASE64"; the return value is a Base64-encoded string.
 
 ### Usage Example
 
