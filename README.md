@@ -18,7 +18,7 @@ License:
 - Free (MIT).
 
 <a name="demo"></a>
-##Try the Demo
+## Try the Demo
 
 Go to the [demo page](https://dazzling-morse-a38f6a.netlify.app) and click the capture button
 
