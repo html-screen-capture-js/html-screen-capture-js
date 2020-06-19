@@ -25,11 +25,8 @@ License:
 <a name="demo"></a>
 ## Try the Demo
 
-Simply clone/download the repository and execute cmd:
-```sh
-run-demo.bat
-```
-It will install all the required npm dependencies, build the library, and open the demo page in Chrome.
+Go to the [demo page](https://dazzling-morse-a38f6a.netlify.app) and click the capture button
+
 
 <a name="technicalOverview"></a>
 ## Technical Overview
