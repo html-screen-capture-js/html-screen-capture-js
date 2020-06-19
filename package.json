@@ -30,7 +30,7 @@
     ],
     "main": "dist/html-screen-capture.min.js",
     "module": "dist/html-screen-capture.esm.js",
-    "types": "./src/types.ts",
+    "types": "dist/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/html-screen-capture-js/html-screen-capture-js"
