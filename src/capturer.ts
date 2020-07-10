@@ -4,6 +4,7 @@ import { base64Encode, uriEncode } from './encoder';
 
 interface CaptureContext {
     isBody: boolean;
+    baseClass: Map<string, string>;
     classMap: Map<string, string>;
     classCount: number;
     pseudoStyles: Array<string>;
@@ -56,19 +57,21 @@ const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element)
         }
     };
     const handleRegularElmStyle = (): string => {
-        let classStr = '';
+        let classStr = 'c0 ';
         const computedStyle = getComputedStyle(domElm);
         for (let i = 0; i < computedStyle.length; i++) {
             const property = computedStyle.item(i);
             const value = computedStyle.getPropertyValue(property);
-            const mapKey = property + ':' + value;
-            let className: string = context.classMap.get(mapKey) || '';
-            if (!className) {
-                context.classCount++;
-                className = `${context.options.prefixForNewGeneratedClasses}${context.classCount}`;
-                context.classMap.set(mapKey, className);
+            if (value !== context.baseClass.get(property)) {
+                const mapKey = property + ':' + value;
+                let className: string = context.classMap.get(mapKey) || '';
+                if (!className) {
+                    context.classCount++;
+                    className = `${context.options.prefixForNewGeneratedClasses}${context.classCount}`;
+                    context.classMap.set(mapKey, className);
+                }
+                classStr += className + ' ';
             }
-            classStr += className + ' ';
         }
         return classStr;
     };
@@ -224,6 +227,22 @@ const recursiveWalk = (context: CaptureContext, domElm: Element, newElm: Element
     }
 };
 
+const createBaseClass = (context: CaptureContext) => {
+    const dummyElm = context.doc.createElement('div');
+    dummyElm.style['display'] = 'none';
+    context.doc.body.appendChild(dummyElm);
+    const computedStyle = getComputedStyle(dummyElm);
+    for (let i = 0; i < computedStyle.length; i++) {
+        const property = computedStyle.item(i);
+        const value = computedStyle.getPropertyValue(property);
+        context.baseClass.set(property, value);
+    }
+    context.baseClass.set('display', 'block');
+    if (dummyElm.parentNode) {
+        dummyElm.parentNode.removeChild(dummyElm);
+    }
+};
+
 const getHtmlObject = (context: CaptureContext): HTMLElement => {
     const createNewHtml = (): HTMLElement => {
         const newHtml = context.doc.documentElement.cloneNode(false) as HTMLElement;
@@ -237,6 +256,7 @@ const getHtmlObject = (context: CaptureContext): HTMLElement => {
         newHtml.appendChild(newHead);
     };
     const appendNewBody = (newHtml: HTMLElement): void => {
+        createBaseClass(context);
         const newBody = context.doc.body.cloneNode(true) as HTMLElement;
         context.isBody = true;
         recursiveWalk(context, context.doc.body, newBody, true);
@@ -244,11 +264,16 @@ const getHtmlObject = (context: CaptureContext): HTMLElement => {
     };
     const appendNewStyle = (newHtml: Element): void => {
         const style = context.doc.createElement('style');
-        let cssText = context.options.rulesToAddToDocStyle.join('');
+        let cssText = '.c0{';
+        context.baseClass.forEach((v, k) => {
+            cssText += `${k}:${v};`;
+        });
+        cssText += '}';
         context.classMap.forEach((v, k) => {
             cssText += `.${v}{${k}}`;
         });
-        cssText += cssText += context.pseudoStyles.join('');
+        cssText += context.pseudoStyles.join('');
+        cssText += context.options.rulesToAddToDocStyle.join('');
         style.appendChild(context.doc.createTextNode(cssText));
         newHtml.children[0].appendChild(style);
     };
@@ -287,6 +312,7 @@ export const goCapture: CaptureFunction = (outputType, htmlDocument, options) =>
     let output = null;
     const context: CaptureContext = {
         isBody: false,
+        baseClass: new Map<string, string>(),
         classMap: new Map<string, string>(),
         classCount: 0,
         pseudoStyles: [],
