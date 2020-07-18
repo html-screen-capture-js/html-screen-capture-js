@@ -115,6 +115,12 @@ the properties, default values are used for all non-defined properties.
 - Default: { } //an empty object
 - Each property name is an HTML attribute key, and its value is an HTML attribute value. Elements with these attribute name and value will not be cloned to the newly created HTML document.
 
+##### computedStyleKeyValuePairsOfIgnoredElements
+
+- Type: Object
+- Default: { display: 'none' }
+- Each property name is a css style property, and its value is a css style value. Elements with these definitions in their computed style will not be cloned to the newly created HTML document.
+
 ##### tagsOfSkippedElementsForChildTreeCssHandling
 
 - Type: Array of strings 
