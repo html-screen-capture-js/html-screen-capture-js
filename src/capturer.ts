@@ -1,4 +1,4 @@
-import { LogLevel, OutputType, CaptureFunction } from './types';
+import { CaptureFunction, LogLevel, OutputType } from './types';
 import { logger } from './logger';
 import { base64Encode, uriEncode } from './encoder';
 
@@ -295,7 +295,7 @@ const getHtmlObject = (context: CaptureContext): HTMLElement => {
     return newHtml;
 };
 
-const prepareOutput = (newHtmlObject: HTMLElement, outputType = OutputType.OBJECT): string | HTMLElement => {
+const prepareOutput = (newHtmlObject: HTMLElement, outputType: OutputType): string | HTMLElement => {
     let output = null;
     if (outputType === OutputType.OBJECT) {
         output = newHtmlObject;
@@ -318,7 +318,7 @@ const prepareOutput = (newHtmlObject: HTMLElement, outputType = OutputType.OBJEC
     return output;
 };
 
-export const goCapture: CaptureFunction = (outputType, htmlDocument, options) => {
+export const goCapture: CaptureFunction = (outputType?, htmlDocument?, options?) => {
     const startTime = new Date().getTime();
     let output = null;
     const context: CaptureContext = {
@@ -348,14 +348,13 @@ export const goCapture: CaptureFunction = (outputType, htmlDocument, options) =>
                 imageQualityForDataUrl: 0.92,
                 logLevel: LogLevel.WARN,
             },
-            ...options,
+            ...(options || {}),
         },
     };
     try {
         logger.setLogLevel(context.options.logLevel);
-        logger.info(`goCapture() outputType: ${outputType} - start`);
         const newHtmlObject = getHtmlObject(context);
-        output = prepareOutput(newHtmlObject, outputType);
+        output = prepareOutput(newHtmlObject, outputType || OutputType.OBJECT);
     } catch (ex) {
         logger.error(`goCapture() - error - ${ex.message}`);
     } finally {
