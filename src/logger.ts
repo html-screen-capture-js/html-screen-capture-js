@@ -8,8 +8,18 @@ const setLogLevel = (levelName: LogLevel = LogLevel.WARN): void => {
 const getLogLevel = (): LogLevel => {
     return selectedLogLevel;
 };
-const log = (msg: string, levelName: LogLevel = selectedLogLevel): void => {
-    console.log('|html-screen-capture-js|' + levelName + '| ' + msg);
+const log = (msg: string, levelName: LogLevel): void => {
+    const logLevelNumbers = [
+        LogLevel.DEBUG,
+        LogLevel.INFO,
+        LogLevel.WARN,
+        LogLevel.ERROR,
+        LogLevel.FATAL,
+        LogLevel.OFF,
+    ];
+    if (logLevelNumbers.indexOf(levelName) >= logLevelNumbers.indexOf(selectedLogLevel)) {
+        console.log('|html-screen-capture-js|' + levelName + '| ' + msg);
+    }
 };
 const isDebug = (): boolean => {
     return selectedLogLevel === LogLevel.DEBUG;
