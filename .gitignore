@@ -1,17 +1,22 @@
-*.iml
-npm-debug.log
-.idea/
 dist/
+
+# NPM / YARN
 node_modules/
-out/
+npm-debug.log
+yarn-error.log
+
+# MAC
 .DS_Store
 
+# IntelliJ IDE
+*.iml
+.idea/
+
+# VSCode IDE
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-
-# Local History for Visual Studio Code
 .history/
