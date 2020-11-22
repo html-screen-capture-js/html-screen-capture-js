@@ -61,6 +61,11 @@ You can get this library from these sources:
 
 [Leave feedback or report a bug](https://github.com/html-screen-capture-js/html-screen-capture-js/issues)
 
+<a name="contribution"></a>
+## Code Contribution
+
+You are all welcome to join the adventure.
+
 <a name="api"></a>
 ## API
 
@@ -181,25 +186,41 @@ parameter supplied to the function. Valid options are below:
 
 ### Usage Example
 
+#### By global variable (for ES5)
+
+```sh
+var str = htmlScreenCaptureJs.capture(
+    'string',
+    window.document,
+    {
+        rulesToAddToDocStyle: [
+            '*,*::before,*::after{font-family:Arial,sans-serif !important;}',
+        ],
+        imageFormatForDataUrl: 'image/jpeg',
+        imageQualityForDataUrl: 1.0
+    }
+);
+```
+
 #### By ES6 import
 
 ```sh
 import { capture, OutputType } from 'html-screen-capture-js';
 ...
-const obj = capture();
-const str = capture(OutputType.STRING);
-const str = capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
+const str = capture(
+    OutputType.STRING,
+    window.document,
+    {
+        rulesToAddToDocStyle: [
+            '*,*::before,*::after{font-family:Arial,sans-serif !important;}',
+        ],
+        imageFormatForDataUrl: 'image/jpeg',
+        imageQualityForDataUrl: 1.0
+    }
+);
 ```
 
-#### By global variable (for ES5)
-
-```sh
-const obj = htmlScreenCaptureJs.capture();
-const str = htmlScreenCaptureJs.capture(OutputType.STRING);
-const str = htmlScreenCaptureJs.capture(OutputType.STRING, document, {'imageFormatForDataUrl': 'image/jpeg', 'imageQualityForDataUrl': 1.0});
-```
-
-### Real-Life Usage Example
+### Real-Life ES6 Usage Example
 
 ```sh
 import {capture, OutputType} from 'html-screen-capture-js';
@@ -211,11 +232,11 @@ const htmlDocStr = capture(
 	window.document,
 	{
 		rulesToAddToDocStyle: [
-			'*,*::before,*::after{font-family:Arial,sans-serif !important;letter-spacing:-0.3px !important;}',
+            '@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap")'			
 		],
 		classesOfIgnoredDocBodyElements: [
-			'modal-dialog--error',
 			'modal-dialog-backdrop',
+			'modal-dialog--error'
 		],		
 	}
 );
