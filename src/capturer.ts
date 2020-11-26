@@ -58,7 +58,7 @@ const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element)
         }
     };
     const handleRegularElmStyle = (): string => {
-        let classStr = 'c0 ';
+        let classStr = `${context.options.prefixForNewGeneratedClasses}0 `;
         const computedStyle = getComputedStyle(domElm);
         for (let i = 0; i < computedStyle.length; i++) {
             const property = computedStyle.item(i);
