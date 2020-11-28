@@ -275,7 +275,7 @@ const getHtmlObject = (context: CaptureContext): HTMLElement => {
     };
     const appendNewStyle = (newHtml: Element): void => {
         const style = context.doc.createElement('style');
-        let cssText = '.c0{';
+        let cssText = `.${context.options.prefixForNewGeneratedClasses}0{`;
         context.baseClass.forEach((v, k) => {
             cssText += `${k}:${v};`;
         });
