@@ -255,3 +255,27 @@ $.ajax({
 	data: JSON.stringify({screenshot: screenCaptureZipFileBase64}),
 });
 ```
+
+### Self-Help When Missing a Feature
+
+If the library is missing a feature you need, you can help yourself:
+
+```sh
+// Set the output type parameter to OutputType.OBJECT (instead of the more common OutputType.STRING).
+const htmlDocObj = capture(OutputType.OBJECT, ..., ...);
+
+// Since the function now returns a DOM document object, you can further manipulate it via js.
+...
+...
+...
+
+// Once done, convert to a string.
+const htmlDocStr = htmlDocObj.outerHTML;
+
+// Continue as usual (sending the string to a server, etc.)
+...
+...
+...
+```
+
+Obviously, you can also create a new enhancement request type issue [here](https://github.com/html-screen-capture-js/html-screen-capture-js/issues)
