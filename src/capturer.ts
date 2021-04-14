@@ -304,9 +304,11 @@ const prepareOutput = (newHtmlObject: HTMLElement, outputType: OutputType): stri
         if (outerHtml) {
             if (outputType === OutputType.STRING) {
                 output = outerHtml;
-            } else if (outputType === OutputType.URI) {
+            } else if (outputType === 'uri') {
+                //support for a deprecated value
                 output = uriEncode(outerHtml);
-            } else if (outputType === OutputType.BASE64) {
+            } else if (outputType === 'base64') {
+                //support for a deprecated value
                 output = base64Encode(outerHtml);
             }
         }

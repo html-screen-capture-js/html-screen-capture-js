@@ -1,8 +1,6 @@
 export enum OutputType {
     OBJECT = 'object',
     STRING = 'string',
-    URI = 'uri',
-    BASE64 = 'base64',
 }
 export enum LogLevel {
     DEBUG = 'debug',
@@ -28,4 +26,8 @@ export interface Options {
     logLevel?: LogLevel;
 }
 export type CaptureOutput = HTMLElement | string | null;
-export type CaptureFunction = (outputType?: OutputType, htmlDocument?: HTMLDocument, options?: Options) => CaptureOutput;
+export type CaptureFunction = (
+    outputType?: OutputType,
+    htmlDocument?: HTMLDocument,
+    options?: Options,
+) => CaptureOutput;

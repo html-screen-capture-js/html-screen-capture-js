@@ -80,7 +80,7 @@ capture([outputType], [htmlDocument], [options]);
 #### outputType
 An optional enum-type parameter, specifying the desired output. If not specified (falsey) - output will be returned as an object.
 
-- Valid values: 'object' | 'string' | 'uri' | 'base64'
+- Valid values: 'object' | 'string'
 
 #### htmlDocument
 An optional object-type parameter, specifying the HTML document to capture. If not specified (falsey) - window.document is used.
@@ -181,8 +181,6 @@ The returned value is a static HTML document in the format specified by the Outp
 parameter supplied to the function. Valid options are below:
 - "htmlScreenCaptureJs.OutputType.OBJECT"; the return value is an object. (Default)
 - "htmlScreenCaptureJs.OutputType.STRING"; the return value is a string.
-- "htmlScreenCaptureJs.OutputType.URI"; the return value is a URI-encoded string.
-- "htmlScreenCaptureJs.OutputType.BASE64"; the return value is a Base64-encoded string.
 
 ### Usage Example
 
