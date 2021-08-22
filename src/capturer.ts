@@ -12,12 +12,10 @@ interface CaptureContext {
     shouldHandleImgDataUrl: boolean;
     canvas: HTMLCanvasElement | null;
     doc: HTMLDocument;
+    ignoredElms: any[];
     options: {
         rulesToAddToDocStyle: string[];
-        tagsOfIgnoredDocHeadElements: string[];
-        tagsOfIgnoredDocBodyElements: string[];
-        classesOfIgnoredDocBodyElements: string[];
-        attrKeyValuePairsOfIgnoredElements: {};
+        cssSelectorsOfIgnoredElements: string[];
         computedStyleKeyValuePairsOfIgnoredElements: {};
         tagsOfSkippedElementsForChildTreeCssHandling: string[];
         attrKeyForSavingElementOrigClass: string;
@@ -166,32 +164,8 @@ const handleCanvasElement = (context: CaptureContext, domElm: HTMLCanvasElement,
 };
 
 const shouldIgnoreElm = (context: CaptureContext, domElm: Element): boolean => {
-    if (
-        (!context.isBody && context.options.tagsOfIgnoredDocHeadElements.includes(domElm.tagName.toLowerCase())) ||
-        (context.isBody && context.options.tagsOfIgnoredDocBodyElements.includes(domElm.tagName.toLowerCase()))
-    ) {
+    if (context.ignoredElms.includes(domElm)) {
         return true;
-    }
-    const attrKeyValuePairsOfIgnoredElements = Object.entries(context.options.attrKeyValuePairsOfIgnoredElements);
-    if (attrKeyValuePairsOfIgnoredElements.length > 0) {
-        for (let i = 0; i < domElm.attributes.length; i++) {
-            if (domElm.attributes[i].specified) {
-                for (const [k, v] of attrKeyValuePairsOfIgnoredElements) {
-                    if (k === domElm.attributes[i].name && v === domElm.attributes[i].value) {
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    const classesOfIgnoredDocBodyElements = context.options.classesOfIgnoredDocBodyElements;
-    if (context.isBody && classesOfIgnoredDocBodyElements.length > 0) {
-        const domElmClasses = getClasses(domElm);
-        for (const c of domElmClasses) {
-            if (classesOfIgnoredDocBodyElements.includes(c)) {
-                return true;
-            }
-        }
     }
     const computedStyleKeyValuePairsOfIgnoredElements = Object.entries(
         context.options.computedStyleKeyValuePairsOfIgnoredElements,
@@ -254,7 +228,22 @@ const createBaseClass = (context: CaptureContext) => {
     }
 };
 
+const getIgnoredElms = (context: CaptureContext) => {
+    if (!context.options.cssSelectorsOfIgnoredElements || !context.options.cssSelectorsOfIgnoredElements.length) {
+        return [];
+    }
+    const ignoredElms: any[] = [];
+    context.options.cssSelectorsOfIgnoredElements.forEach((cssSelector) => {
+        const elms = context.doc.documentElement.querySelectorAll(cssSelector);
+        elms.forEach((elm) => {
+            ignoredElms.push(elm);
+        });
+    });
+    return ignoredElms;
+};
+
 const getHtmlObject = (context: CaptureContext): HTMLElement => {
+    context.ignoredElms = getIgnoredElms(context);
     const createNewHtml = (): HTMLElement => {
         const newHtml = context.doc.documentElement.cloneNode(false) as HTMLElement;
         handleElmCss(context, context.doc.documentElement, newHtml);
@@ -333,13 +322,11 @@ export const goCapture: CaptureFunction = (outputType?, htmlDocument?, options?)
         shouldHandleImgDataUrl: true,
         canvas: null,
         doc: htmlDocument || document,
+        ignoredElms: [],
         options: {
             ...{
                 rulesToAddToDocStyle: [],
-                tagsOfIgnoredDocHeadElements: ['script', 'link', 'style'],
-                tagsOfIgnoredDocBodyElements: ['script'],
-                classesOfIgnoredDocBodyElements: [],
-                attrKeyValuePairsOfIgnoredElements: {},
+                cssSelectorsOfIgnoredElements: ['script', 'link', 'style'],
                 computedStyleKeyValuePairsOfIgnoredElements: { display: 'none' },
                 tagsOfSkippedElementsForChildTreeCssHandling: ['svg'],
                 attrKeyForSavingElementOrigClass: '_class',

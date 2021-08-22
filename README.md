@@ -96,29 +96,11 @@ the properties, default values are used for all non-defined properties.
 - Default: [ ] //an empty array
 - CSS rules to add to the newly created HTML document.
 
-##### tagsOfIgnoredDocHeadElements
+#### cssSelectorsOfIgnoredElements
 
 - Type: Array of strings
 - Default: [ 'script', 'link', 'style' ]
-- Head elements with these tag names will not be cloned to the newly created HTML document.
-
-##### tagsOfIgnoredDocBodyElements
-
-- Type: Array of strings
-- Default: [ 'script' ]
-- Body elements with these tag names will not be cloned to the newly created HTML document.
-
-##### classesOfIgnoredDocBodyElements
-
-- Type: Array of strings
-- Default: [ ] //an empty array
-- Body elements with these class names will not be cloned to the newly created HTML document.
-
-##### attrKeyValuePairsOfIgnoredElements
-
-- Type: Object
-- Default: { } //an empty object
-- Each property name is an HTML attribute key, and its value is an HTML attribute value. Elements with these attribute name and value will not be cloned to the newly created HTML document.
+- Elements matching any of these CSS-style selectors will not be cloned to the newly created HTML document.
 
 ##### computedStyleKeyValuePairsOfIgnoredElements
 
