@@ -5,9 +5,12 @@ const displayInFrame = (docText) => {
 
 const goCapture = () => {
     const docText = htmlScreenCaptureJs.capture('string', document, {
-        attrKeyValuePairsOfIgnoredElements: {
-            id: 'content-to-ignore',
-        },
+        cssSelectorsOfIgnoredElements: [
+            '#content-to-ignore',
+            '#ignore-me-by-id',
+            '.ignore-me-by-class',
+            '[data-ignore-me-by-attribute]',
+        ],
     });
     document.getElementById('capture-result-text').value = docText;
     displayInFrame(docText);

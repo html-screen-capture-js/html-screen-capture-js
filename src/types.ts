@@ -12,10 +12,7 @@ export enum LogLevel {
 }
 export interface Options {
     rulesToAddToDocStyle?: string[];
-    tagsOfIgnoredDocHeadElements?: string[];
-    tagsOfIgnoredDocBodyElements?: string[];
-    classesOfIgnoredDocBodyElements?: string[];
-    attrKeyValuePairsOfIgnoredElements?: {};
+    cssSelectorsOfIgnoredElements: string[];
     tagsOfSkippedElementsForChildTreeCssHandling?: string[];
     attrKeyForSavingElementOrigClass?: string;
     attrKeyForSavingElementOrigStyle?: string;
