@@ -31,7 +31,7 @@ interface CaptureContext {
 const getClassName = (domElm: Element): string => {
     const className: any = domElm.className;
     const stringClass = className.toString() === '[object SVGAnimatedString]' ? className.baseVal : className;
-    return typeof stringClass === 'string' ? stringClass : ''
+    return typeof stringClass === 'string' ? stringClass : '';
 };
 
 const getClasses = (domElm: Element): string[] => {
