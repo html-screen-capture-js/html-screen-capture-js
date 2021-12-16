@@ -116,7 +116,7 @@ const getCanvasDataUrl = (context: CaptureContext, domElm: HTMLImageElement | HT
             context.options.imageFormatForDataUrl,
             context.options.imageQualityForDataUrl,
         );
-    } catch (ex) {
+    } catch (ex: any) {
         logger.warn(`getCanvasDataUrl() - ${ex.message}`);
     }
     return canvasDataUrl;
@@ -345,7 +345,7 @@ export const goCapture: CaptureFunction = (outputType?, htmlDocument?, options?)
         logger.setLogLevel(context.options.logLevel);
         const newHtmlObject = getHtmlObject(context);
         output = prepareOutput(newHtmlObject, outputType || OutputType.OBJECT);
-    } catch (ex) {
+    } catch (ex: any) {
         logger.error(`goCapture() - error - ${ex.message}`);
     } finally {
         logger.info(`goCapture() - end - ${new Date().getTime() - startTime}ms`);
