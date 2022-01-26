@@ -212,12 +212,12 @@ const htmlDocStr = capture(
 	window.document,
 	{
 		rulesToAddToDocStyle: [
-            '@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap")'			
+            		'@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap")'			
 		],
-		classesOfIgnoredDocBodyElements: [
-			'modal-dialog-backdrop',
-			'modal-dialog--error'
-		],		
+		cssSelectorsOfIgnoredElements: [
+	    		'.modal-dialog-backdrop',
+	    		'.modal-dialog--error'
+	  	]
 	}
 );
 
