@@ -10,9 +10,11 @@
 </head>
 <body>
     <div id="content-to-capture" class="content-to-capture">
-        <svg style="width:0;height:0;position:fixed" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <svg style="width:0;height:0;position:fixed" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <symbol viewBox="0 0 16 16" id="refresh"><path d="M15 1a1 1 0 00-1 1v.716A7.978 7.978 0 008 0C3.589 0 0 3.589 0 8a1 1 0 102 0c0-3.309 2.691-6 6-6 1.723 0 3.334.738 4.465 2H12a1 1 0 100 2h3a1 1 0 001-1V2a1 1 0 00-1-1zM15 7a1 1 0 00-1 1c0 3.309-2.691 6-6 6a5.986 5.986 0 01-4.465-2H4a1 1 0 100-2H1a1 1 0 00-1 1v3a1 1 0 102 0v-.716A7.978 7.978 0 008 16c4.411 0 8-3.589 8-8a1 1 0 00-1-1z"></path></symbol>
+                <symbol id="refresh" viewBox="0 0 16 16" width="16px" height="16px">
+                    <path d="M15 1a1 1 0 00-1 1v.716A7.978 7.978 0 008 0C3.589 0 0 3.589 0 8a1 1 0 102 0c0-3.309 2.691-6 6-6 1.723 0 3.334.738 4.465 2H12a1 1 0 100 2h3a1 1 0 001-1V2a1 1 0 00-1-1zM15 7a1 1 0 00-1 1c0 3.309-2.691 6-6 6a5.986 5.986 0 01-4.465-2H4a1 1 0 100-2H1a1 1 0 00-1 1v3a1 1 0 102 0v-.716A7.978 7.978 0 008 16c4.411 0 8-3.589 8-8a1 1 0 00-1-1z"></path>
+                </symbol>
             </defs>
         </svg>
         <div class="content-left">
@@ -48,7 +50,7 @@
             </section>
             <section class="svg-use-link">
             <svg style="width:16px;height:16px;fill:green">
-                <use xlink:href="#refresh"></use>
+                <use href="#refresh"></use>
             </svg>
             </section>
             <section>
