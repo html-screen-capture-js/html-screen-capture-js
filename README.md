@@ -166,23 +166,7 @@ parameter supplied to the function. Valid options are below:
 
 ### Usage Example
 
-#### By global variable (for ES5)
-
-```sh
-var str = htmlScreenCaptureJs.capture(
-    'string',
-    window.document,
-    {
-        rulesToAddToDocStyle: [
-            '*,*::before,*::after{font-family:Arial,sans-serif !important;}',
-        ],
-        imageFormatForDataUrl: 'image/jpeg',
-        imageQualityForDataUrl: 1.0
-    }
-);
-```
-
-#### By ES6 import
+#### By import
 
 ```sh
 import { capture, OutputType } from 'html-screen-capture-js';
@@ -190,17 +174,11 @@ import { capture, OutputType } from 'html-screen-capture-js';
 const str = capture(
     OutputType.STRING,
     window.document,
-    {
-        rulesToAddToDocStyle: [
-            '*,*::before,*::after{font-family:Arial,sans-serif !important;}',
-        ],
-        imageFormatForDataUrl: 'image/jpeg',
-        imageQualityForDataUrl: 1.0
-    }
+    {}
 );
 ```
 
-### Real-Life ES6 Usage Example
+### Real-Life Usage Example
 
 ```sh
 import {capture, OutputType} from 'html-screen-capture-js';
@@ -236,6 +214,16 @@ $.ajax({
 	dataType: 'json',
 	data: JSON.stringify({screenshot: screenCaptureZipFileBase64}),
 });
+```
+
+#### By global variable (for ES5)
+
+```sh
+var str = htmlScreenCaptureJs.capture(
+    'string',
+    window.document,
+    {} 
+);
 ```
 
 ### Self-Help When Missing a Feature
