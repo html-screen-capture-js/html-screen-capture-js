@@ -1,4 +1,5 @@
 # Output
+tsc/
 dist/
 
 # NPM / YARN

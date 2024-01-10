@@ -1,13 +1,23 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "ESNext",
-        "lib": ["DOM", "ESNext"],
-        "declaration": true,
-        "outDir": "lib",
+        "target": "es2018",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "noEmitOnError": true,
+        "lib": ["es2017", "dom"],
         "strict": true,
-        "allowJs": true
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "outDir": "tsc",
+        "sourceMap": true,
+        "inlineSources": true,
+        "rootDir": "./",
+        "declaration": true,
+        "incremental": true,
+        "noImplicitAny": false,
+        "resolveJsonModule": true
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "**/__tests__/*", "dist"]
+    "include": ["**/*.ts"]
 }

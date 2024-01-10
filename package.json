@@ -36,9 +36,14 @@
         "url": "https://github.com/html-screen-capture-js/html-screen-capture-js"
     },
     "scripts": {
-        "build": "rollup -c --environment BUILD:production",
-        "dev": "rollup -c --environment BUILD:dev",
-        "lint": "tsc --noEmit && lint-staged"
+        "format": "prettier --write \"src/**/*.ts\"",
+        "lint": "eslint --fix src/**/*.ts",
+        "compile": "tsc",
+        "bundle-dev": "rollup -c --environment build:development",
+        "bundle-prod": "rollup -c --environment build:production",
+        "bundle": "yarn bundle-dev && yarn bundle-prod",
+        "build": "yarn compile && yarn bundle",
+        "full": "yarn format && yarn lint && yarn build"
     },
     "husky": {
         "hooks": {
@@ -46,29 +51,24 @@
             "pre-push": ""
         }
     },
-    "lint-staged": {
-        "*.{js,ts}": [
-            "eslint --fix"
-        ]
-    },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^16.0.0",
         "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^10.0.0",
         "@rollup/plugin-replace": "^2.3.4",
         "@rollup/plugin-typescript": "^6.1.0",
-        "@types/node": "^14.14.9",
-        "eslint": "^7.32.0",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-prettier": "^3.4.0",
+        "@types/node": "^20.8.10",
+        "@typescript-eslint/eslint-plugin": "^6.9.1",
+        "@typescript-eslint/parser": "^6.9.1",
+        "eslint": "^8.53.0",
         "husky": "^7.0.2",
-        "prettier": "^2.3.0",
+        "prettier": "^3.0.3",
         "rollup": "^2.33.3",
         "rollup-plugin-sourcemaps": "^0.6.3",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.29.0",
-        "tslib": "^2.0.3",
-        "typescript": "^4.3.2",
+        "tslib": "^2.6.0",
+        "typescript": "^5.2.2",
         "yargs": "^16.1.1"
     },
     "dependencies": {}
