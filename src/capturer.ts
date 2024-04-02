@@ -205,6 +205,7 @@ const recursiveWalk = (context: CaptureContext, domElm: Element, newElm: Element
 
 const createBaseClass = (context: CaptureContext) => {
 	const dummyElm = context.doc.createElement('div');
+	dummyElm.id = 'html-screen-capture-dummy-div';
 	dummyElm.style['display'] = 'none';
 	context.doc.body.appendChild(dummyElm);
 	const computedStyle = getComputedStyle(dummyElm);
