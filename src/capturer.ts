@@ -1,10 +1,45 @@
-import { CaptureFunction, LogLevel, OutputType } from './types';
-import { logger } from './logger';
-import { base64Encode, uriEncode } from './encoder';
+import {CaptureFunction, LogLevel, OutputType} from './types';
+import {logger} from './logger';
+import {base64Encode, uriEncode} from './encoder';
+import {SVG_RELEVANT_CSS_PROPERTIES, SVG_ONLY_CSS_PROPERTIES} from './constants';
+
+const isSvgElement = (elm: Element): boolean => {
+	return elm instanceof SVGElement || elm.namespaceURI === 'http://www.w3.org/2000/svg';
+};
+
+const getStandardProperties = (
+	computedStyle: CSSStyleDeclaration,
+	domElm: Element,
+	enableSvgStyleHandling: boolean
+): string[] => {
+	const properties: string[] = [];
+
+	if (enableSvgStyleHandling && isSvgElement(domElm)) {
+		for (let i = 0; i < SVG_RELEVANT_CSS_PROPERTIES.length; i++) {
+			const property = SVG_RELEVANT_CSS_PROPERTIES[i];
+			if (computedStyle.getPropertyValue(property)) {
+				properties.push(property);
+			}
+		}
+	} else {
+		for (let i = 0; i < computedStyle.length; i++) {
+			const property = computedStyle.item(i);
+			if (
+				!property.startsWith('--') &&
+				(!enableSvgStyleHandling || !SVG_ONLY_CSS_PROPERTIES.has(property)) &&
+				!property.startsWith('-webkit')
+			) {
+				properties.push(property);
+			}
+		}
+	}
+	return properties;
+};
 
 interface CaptureContext {
 	isBody: boolean;
 	baseClass: Map<string, string>;
+	svgBaseClass: Map<string, string>;
 	classMap: Map<string, string>;
 	classCount: number;
 	pseudoStyles: Array<string>;
@@ -15,6 +50,7 @@ interface CaptureContext {
 	ignoredElms: Node[];
 	options: {
 		rulesToAddToDocStyle: string[];
+		enableSvgStyleHandling: boolean;
 		cssSelectorsOfIgnoredElements: string[];
 		computedStyleKeyValuePairsOfIgnoredElements: object;
 		tagsOfSkippedElementsForChildTreeCssHandling: string[];
@@ -31,7 +67,8 @@ interface CaptureContext {
 const getClassName = (domElm: Element): string => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const className: any = domElm.className;
-	const stringClass = className.toString() === '[object SVGAnimatedString]' ? className.baseVal : className;
+	const stringClass =
+		className.toString() === '[object SVGAnimatedString]' ? className.baseVal : className;
 	return typeof stringClass === 'string' ? stringClass : '';
 };
 
@@ -58,12 +95,20 @@ const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element)
 		}
 	};
 	const handleRegularElmStyle = (): string => {
-		let classStr = `${context.options.prefixForNewGeneratedClasses}0 `;
+		const isSvg = context.options.enableSvgStyleHandling && isSvgElement(domElm);
+		const baseClassPrefix = isSvg
+			? `${context.options.prefixForNewGeneratedClasses}svg0`
+			: `${context.options.prefixForNewGeneratedClasses}0`;
+		const baseClassMap = isSvg ? context.svgBaseClass : context.baseClass;
+		let classStr = `${baseClassPrefix} `;
 		const computedStyle = getComputedStyle(domElm);
-		for (let i = 0; i < computedStyle.length; i++) {
-			const property = computedStyle.item(i);
+		for (const property of getStandardProperties(
+			computedStyle,
+			domElm,
+			context.options.enableSvgStyleHandling
+		)) {
 			const value = computedStyle.getPropertyValue(property);
-			if (value !== context.baseClass.get(property)) {
+			if (value !== baseClassMap.get(property)) {
 				const mapKey = property + ':' + value;
 				let className: string = context.classMap.get(mapKey) || '';
 				if (!className) {
@@ -85,8 +130,11 @@ const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element)
 				const className = `${context.options.prefixForNewGeneratedPseudoClasses}${context.pseudoClassCount}`;
 				classStr += className + ' ';
 				context.pseudoStyles.push(`.${className}${pseudoType}{`);
-				for (let i = 0; i < computedStyle.length; i++) {
-					const property = computedStyle.item(i);
+				for (const property of getStandardProperties(
+					computedStyle,
+					domElm,
+					context.options.enableSvgStyleHandling
+				)) {
 					const value = computedStyle.getPropertyValue(property);
 					context.pseudoStyles.push(`${property}:${value};`);
 				}
@@ -107,8 +155,10 @@ const getCanvasDataUrl = (context: CaptureContext, domElm: HTMLImageElement | HT
 		if (!context.canvas) {
 			context.canvas = context.doc.createElement('canvas');
 		}
-		context.canvas.width = domElm instanceof HTMLImageElement ? domElm.naturalWidth : domElm.offsetWidth;
-		context.canvas.height = domElm instanceof HTMLImageElement ? domElm.naturalHeight : domElm.offsetHeight;
+		context.canvas.width =
+			domElm instanceof HTMLImageElement ? domElm.naturalWidth : domElm.offsetWidth;
+		context.canvas.height =
+			domElm instanceof HTMLImageElement ? domElm.naturalHeight : domElm.offsetHeight;
 		const ctx = context.canvas.getContext('2d');
 		if (ctx) {
 			ctx.drawImage(domElm, 0, 0);
@@ -209,14 +259,39 @@ const createBaseClass = (context: CaptureContext) => {
 	dummyElm.style['display'] = 'none';
 	context.doc.body.appendChild(dummyElm);
 	const computedStyle = getComputedStyle(dummyElm);
-	for (let i = 0; i < computedStyle.length; i++) {
-		const property = computedStyle.item(i);
+	for (const property of getStandardProperties(
+		computedStyle,
+		dummyElm,
+		context.options.enableSvgStyleHandling
+	)) {
 		const value = computedStyle.getPropertyValue(property);
 		context.baseClass.set(property, value);
 	}
 	context.baseClass.set('display', 'block');
 	if (dummyElm.parentNode) {
 		dummyElm.parentNode.removeChild(dummyElm);
+	}
+};
+
+const createSvgBaseClass = (context: CaptureContext) => {
+	const svgNs = 'http://www.w3.org/2000/svg';
+	const dummySvg = context.doc.createElementNS(svgNs, 'svg');
+	dummySvg.setAttribute('id', 'html-screen-capture-dummy-svg');
+	dummySvg.style.display = 'none';
+	context.doc.body.appendChild(dummySvg);
+	const dummyRect = context.doc.createElementNS(svgNs, 'rect');
+	dummySvg.appendChild(dummyRect);
+	const computedStyle = getComputedStyle(dummyRect);
+	for (const property of getStandardProperties(
+		computedStyle,
+		dummyRect,
+		context.options.enableSvgStyleHandling
+	)) {
+		const value = computedStyle.getPropertyValue(property);
+		context.svgBaseClass.set(property, value);
+	}
+	if (dummySvg.parentNode) {
+		dummySvg.parentNode.removeChild(dummySvg);
 	}
 };
 
@@ -249,6 +324,9 @@ const getHtmlObject = (context: CaptureContext): HTMLElement => {
 	};
 	const appendNewBody = (newHtml: HTMLElement): void => {
 		createBaseClass(context);
+		if (context.options.enableSvgStyleHandling) {
+			createSvgBaseClass(context);
+		}
 		const newBody = context.doc.body.cloneNode(true) as HTMLElement;
 		context.isBody = true;
 		recursiveWalk(context, context.doc.body, newBody, true);
@@ -256,11 +334,19 @@ const getHtmlObject = (context: CaptureContext): HTMLElement => {
 	};
 	const appendNewStyle = (newHtml: Element): void => {
 		const style = context.doc.createElement('style');
-		let cssText = `.${context.options.prefixForNewGeneratedClasses}0{`;
+		const prefix = context.options.prefixForNewGeneratedClasses;
+		let cssText = `.${prefix}0{`;
 		context.baseClass.forEach((v, k) => {
 			cssText += `${k}:${v};`;
 		});
 		cssText += '}';
+		if (context.options.enableSvgStyleHandling) {
+			cssText += `.${prefix}svg0{`;
+			context.svgBaseClass.forEach((v, k) => {
+				cssText += `${k}:${v};`;
+			});
+			cssText += '}';
+		}
 		context.classMap.forEach((v, k) => {
 			cssText += `.${v}{${k}}`;
 		});
@@ -307,6 +393,7 @@ export const goCapture: CaptureFunction = (outputType?, htmlDocument?, options?)
 	const context: CaptureContext = {
 		isBody: false,
 		baseClass: new Map<string, string>(),
+		svgBaseClass: new Map<string, string>(),
 		classMap: new Map<string, string>(),
 		classCount: 0,
 		pseudoStyles: [],
@@ -318,6 +405,7 @@ export const goCapture: CaptureFunction = (outputType?, htmlDocument?, options?)
 		options: {
 			...{
 				rulesToAddToDocStyle: [],
+				enableSvgStyleHandling: false,
 				cssSelectorsOfIgnoredElements: ['script', 'link', 'style'],
 				computedStyleKeyValuePairsOfIgnoredElements: { display: 'none' },
 				tagsOfSkippedElementsForChildTreeCssHandling: ['svg'],

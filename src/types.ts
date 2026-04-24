@@ -12,6 +12,7 @@ export enum LogLevel {
 }
 export interface Options {
 	rulesToAddToDocStyle?: string[];
+	enableSvgStyleHandling?: boolean;
 	cssSelectorsOfIgnoredElements: string[];
 	tagsOfSkippedElementsForChildTreeCssHandling?: string[];
 	attrKeyForSavingElementOrigClass?: string;
