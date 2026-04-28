@@ -15,22 +15,14 @@ const getStandardProperties = (
 	const properties: string[] = [];
 
 	if (enableSvgStyleHandling && isSvgElement(domElm)) {
-		for (let i = 0; i < SVG_RELEVANT_CSS_PROPERTIES.length; i++) {
-			const property = SVG_RELEVANT_CSS_PROPERTIES[i];
-			if (computedStyle.getPropertyValue(property)) {
-				properties.push(property);
-			}
-		}
+		properties.push(...SVG_RELEVANT_CSS_PROPERTIES.filter(p => computedStyle.getPropertyValue(p)));
 	} else {
 		for (let i = 0; i < computedStyle.length; i++) {
 			const property = computedStyle.item(i);
-			if (
-				!property.startsWith('--') &&
-				(!enableSvgStyleHandling || !SVG_ONLY_CSS_PROPERTIES.has(property)) &&
-				!property.startsWith('-webkit')
-			) {
-				properties.push(property);
+			if (property.startsWith('--') || (enableSvgStyleHandling && SVG_ONLY_CSS_PROPERTIES.has(property))) {
+				continue;
 			}
+			properties.push(property);
 		}
 	}
 	return properties;
@@ -95,11 +87,11 @@ const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element)
 		}
 	};
 	const handleRegularElmStyle = (): string => {
-		const isSvg = context.options.enableSvgStyleHandling && isSvgElement(domElm);
-		const baseClassPrefix = isSvg
+		const shouldApplySvgStyleHandling = context.options.enableSvgStyleHandling && isSvgElement(domElm);
+		const baseClassPrefix = shouldApplySvgStyleHandling
 			? `${context.options.prefixForNewGeneratedClasses}svg0`
 			: `${context.options.prefixForNewGeneratedClasses}0`;
-		const baseClassMap = isSvg ? context.svgBaseClass : context.baseClass;
+		const baseClassMap = shouldApplySvgStyleHandling ? context.svgBaseClass : context.baseClass;
 		let classStr = `${baseClassPrefix} `;
 		const computedStyle = getComputedStyle(domElm);
 		for (const property of getStandardProperties(
@@ -290,9 +282,7 @@ const createSvgBaseClass = (context: CaptureContext) => {
 		const value = computedStyle.getPropertyValue(property);
 		context.svgBaseClass.set(property, value);
 	}
-	if (dummySvg.parentNode) {
-		dummySvg.parentNode.removeChild(dummySvg);
-	}
+	dummySvg.remove();
 };
 
 const getIgnoredElms = (context: CaptureContext) => {
