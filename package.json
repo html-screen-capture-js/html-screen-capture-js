@@ -33,7 +33,7 @@
     "types": "dist/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/html-screen-capture-js/html-screen-capture-js"
+        "url": "git+https://github.com/html-screen-capture-js/html-screen-capture-js.git"
     },
     "scripts": {
         "format": "prettier --write \"src/**/*.ts\"",
