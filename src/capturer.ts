@@ -1,17 +1,13 @@
-import {CaptureFunction, LogLevel, OutputType} from './types';
-import {logger} from './logger';
-import {base64Encode, uriEncode} from './encoder';
-import {SVG_RELEVANT_CSS_PROPERTIES, SVG_ONLY_CSS_PROPERTIES} from './constants';
+import { CaptureFunction, LogLevel, OutputType } from './types';
+import { logger } from './logger';
+import { base64Encode, uriEncode } from './encoder';
+import { SVG_RELEVANT_CSS_PROPERTIES, SVG_ONLY_CSS_PROPERTIES } from './constants';
 
 const isSvgElement = (elm: Element): boolean => {
 	return elm instanceof SVGElement || elm.namespaceURI === 'http://www.w3.org/2000/svg';
 };
 
-const getStandardProperties = (
-	computedStyle: CSSStyleDeclaration,
-	domElm: Element,
-	enableSvgStyleHandling: boolean
-): string[] => {
+const getStandardProperties = (computedStyle: CSSStyleDeclaration, domElm: Element, enableSvgStyleHandling: boolean): string[] => {
 	const properties: string[] = [];
 
 	if (enableSvgStyleHandling && isSvgElement(domElm)) {
@@ -59,8 +55,7 @@ interface CaptureContext {
 const getClassName = (domElm: Element): string => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const className: any = domElm.className;
-	const stringClass =
-		className.toString() === '[object SVGAnimatedString]' ? className.baseVal : className;
+	const stringClass = className.toString() === '[object SVGAnimatedString]' ? className.baseVal : className;
 	return typeof stringClass === 'string' ? stringClass : '';
 };
 
@@ -88,17 +83,11 @@ const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element)
 	};
 	const handleRegularElmStyle = (): string => {
 		const shouldApplySvgStyleHandling = context.options.enableSvgStyleHandling && isSvgElement(domElm);
-		const baseClassPrefix = shouldApplySvgStyleHandling
-			? `${context.options.prefixForNewGeneratedClasses}svg0`
-			: `${context.options.prefixForNewGeneratedClasses}0`;
+		const baseClassPrefix = shouldApplySvgStyleHandling ? `${context.options.prefixForNewGeneratedClasses}svg0` : `${context.options.prefixForNewGeneratedClasses}0`;
 		const baseClassMap = shouldApplySvgStyleHandling ? context.svgBaseClass : context.baseClass;
 		let classStr = `${baseClassPrefix} `;
 		const computedStyle = getComputedStyle(domElm);
-		for (const property of getStandardProperties(
-			computedStyle,
-			domElm,
-			context.options.enableSvgStyleHandling
-		)) {
+		for (const property of getStandardProperties(computedStyle, domElm, context.options.enableSvgStyleHandling)) {
 			const value = computedStyle.getPropertyValue(property);
 			if (value !== baseClassMap.get(property)) {
 				const mapKey = property + ':' + value;
@@ -122,11 +111,7 @@ const handleElmCss = (context: CaptureContext, domElm: Element, newElm: Element)
 				const className = `${context.options.prefixForNewGeneratedPseudoClasses}${context.pseudoClassCount}`;
 				classStr += className + ' ';
 				context.pseudoStyles.push(`.${className}${pseudoType}{`);
-				for (const property of getStandardProperties(
-					computedStyle,
-					domElm,
-					context.options.enableSvgStyleHandling
-				)) {
+				for (const property of getStandardProperties(computedStyle, domElm, context.options.enableSvgStyleHandling)) {
 					const value = computedStyle.getPropertyValue(property);
 					context.pseudoStyles.push(`${property}:${value};`);
 				}
@@ -147,10 +132,8 @@ const getCanvasDataUrl = (context: CaptureContext, domElm: HTMLImageElement | HT
 		if (!context.canvas) {
 			context.canvas = context.doc.createElement('canvas');
 		}
-		context.canvas.width =
-			domElm instanceof HTMLImageElement ? domElm.naturalWidth : domElm.offsetWidth;
-		context.canvas.height =
-			domElm instanceof HTMLImageElement ? domElm.naturalHeight : domElm.offsetHeight;
+		context.canvas.width = domElm instanceof HTMLImageElement ? domElm.naturalWidth : domElm.offsetWidth;
+		context.canvas.height = domElm instanceof HTMLImageElement ? domElm.naturalHeight : domElm.offsetHeight;
 		const ctx = context.canvas.getContext('2d');
 		if (ctx) {
 			ctx.drawImage(domElm, 0, 0);
@@ -251,11 +234,7 @@ const createBaseClass = (context: CaptureContext) => {
 	dummyElm.style['display'] = 'none';
 	context.doc.body.appendChild(dummyElm);
 	const computedStyle = getComputedStyle(dummyElm);
-	for (const property of getStandardProperties(
-		computedStyle,
-		dummyElm,
-		context.options.enableSvgStyleHandling
-	)) {
+	for (const property of getStandardProperties(computedStyle, dummyElm, context.options.enableSvgStyleHandling)) {
 		const value = computedStyle.getPropertyValue(property);
 		context.baseClass.set(property, value);
 	}
@@ -274,11 +253,7 @@ const createSvgBaseClass = (context: CaptureContext) => {
 	const dummyRect = context.doc.createElementNS(svgNs, 'rect');
 	dummySvg.appendChild(dummyRect);
 	const computedStyle = getComputedStyle(dummyRect);
-	for (const property of getStandardProperties(
-		computedStyle,
-		dummyRect,
-		context.options.enableSvgStyleHandling
-	)) {
+	for (const property of getStandardProperties(computedStyle, dummyRect, context.options.enableSvgStyleHandling)) {
 		const value = computedStyle.getPropertyValue(property);
 		context.svgBaseClass.set(property, value);
 	}

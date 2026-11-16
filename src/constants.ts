@@ -162,4 +162,3 @@ export const SVG_ONLY_CSS_PROPERTIES: ReadonlySet<string> = new Set([
 	'x',
 	'y',
 ]);
-

@@ -25,7 +25,16 @@ export default {
         // Allow json resolution
         json(),
         // Compile TypeScript files
-        typescript({ useTsconfigDeclarationDir: false }),
+        typescript({
+            useTsconfigDeclarationDir: false,
+            // Regex filters avoid the plugin's rootDir-based glob resolution on Windows.
+            include: [/\.tsx?$/],
+            exclude: [/\.d\.ts$/],
+            tsconfigOverride: {
+                compilerOptions: { rootDir: './src' },
+                include: ['src/**/*.ts'],
+            },
+        }),
         // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
         commonjs(),
         // Allow node_modules resolution, so you can use 'external' to control
